@@ -201,11 +201,42 @@ jQuery(function ($) {
 
 			this.render();
 		},
+
+		/*----------------------
+		------------------------
+		Called from: App.bindEvents (63, 69); App.update (192)
+		    Accepts: Object from a click event on an element with the class destroy - .on('click', '.destroy',... - 69
+		    Returns: Does not retun anything - processing.
+		        How: - Accepts object
+			 		 - gets position of object in the todos array - this.getIndexFromEl(e.target)
+			         - splice that item
+			         - Calls the render() function to display
+		        Why: To delete an item when that items .destroy element is clicked.
+		------------------------
+		----------------------*/
 		destroy: function (e) {
+			// e.target is sent to getIndexFromEl
+			// getIndexFromEl figures out what item in the todos array has been clicked
+			// splice that sucker
 			this.todos.splice(this.getIndexFromEl(e.target), 1);
+			// display
 			this.render();
 		}
+
 	};
 
 	App.init();
+
 });
+
+
+/*----------------------
+------------------------
+Called from: 
+    Accepts:
+    Returns:
+        How:
+        Why:
+------------------------
+----------------------*/
+
