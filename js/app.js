@@ -40,7 +40,7 @@ jQuery(function ($) {
 
 	var App = {
 		/*----------------------
-			method name;
+			init
 		------------------------
 		Called from: 
 			Accepts:
@@ -66,7 +66,7 @@ jQuery(function ($) {
     *************************************************************/
 		
 	    /*----------------------
-			method name;
+			bindEvents
 		------------------------
 		Called from: 
 			Accepts:
@@ -178,8 +178,8 @@ jQuery(function ($) {
 			Returns: An array of Active todos (todos !completed).
 				How: Takes this.todos array and uses .filter to return an array
 				     of completed todos.
-				Why: To display all the completed todos when the user clicks 'All' in the 
-					 footer.
+				Why: To display all the completed todos when the user clicks 'All' 
+					 in the footer.
 	    ----------------------*/
 		getActiveTodos: function () {
 			// return this.todos array after .filter has been run.
