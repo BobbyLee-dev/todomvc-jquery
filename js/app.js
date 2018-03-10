@@ -39,6 +39,15 @@ jQuery(function ($) {
 	};
 
 	var App = {
+		/*----------------------
+			method name;
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
 		init: function () {
 			this.todos = util.store('todos-jquery');
 			this.todoTemplate = Handlebars.compile($('#todo-template').html());
@@ -51,7 +60,20 @@ jQuery(function ($) {
 					this.render();
 				}.bind(this)
 			}).init('/all');
-		},
+		},  // End init ->  Call Stack:
+
+    /*************************************************************
+    *************************************************************/
+		
+	    /*----------------------
+			method name;
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
 		bindEvents: function () {
 			$('#new-todo').on('keyup', this.create.bind(this));
 			// .on('change') doesn't necessarily trigger this event listener.
@@ -67,7 +89,20 @@ jQuery(function ($) {
 				.on('keyup', '.edit', this.editKeyup.bind(this))
 				.on('focusout', '.edit', this.update.bind(this))
 				.on('click', '.destroy', this.destroy.bind(this));
-		},
+		}, // End bindEvents ->  Call Stack:
+
+    /*************************************************************
+    *************************************************************/
+
+	    /*----------------------
+			render
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
 		render: function () {
 			var todos = this.getFilteredTodos();
 			$('#todo-list').html(this.todoTemplate(todos));
@@ -77,7 +112,20 @@ jQuery(function ($) {
 			this.renderFooter();
 			$('#new-todo').focus();
 			util.store('todos-jquery', this.todos);
-		},
+		},  // End render ->  Call Stack:
+  
+    /*************************************************************
+    *************************************************************/
+
+	    /*----------------------
+			renderFooter
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
 		renderFooter: function () {
 			var todoCount = this.todos.length;
 			var activeTodoCount = this.getActiveTodos().length;
@@ -89,7 +137,20 @@ jQuery(function ($) {
 			});
 
 			$('#footer').toggle(todoCount > 0).html(template);
-		},
+		},  // renderFooter ->  Call Stack:
+
+    /*************************************************************
+    *************************************************************/
+
+	    /*----------------------
+			toggleAll
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
 		toggleAll: function (e) {
 			// the checked value is already set before this function is run.
 			// This function just looks at what that value is.
@@ -104,19 +165,66 @@ jQuery(function ($) {
 			});
 
 			this.render();
-		},
+		},  // End toggleAll ->  Call Stack:
+
+	/*************************************************************
+    *************************************************************/
+
+		/*----------------------
+		   getActiveTodos
+		------------------------
+		Called from: render > getFilteredTodos > getActiveTodos
+			Accepts: Does not accept any parameters, uses existing data - this.todos
+			Returns: An array of Active todos (todos !completed).
+				How: Takes this.todos array and uses .filter to return an array
+				     of completed todos.
+				Why: To display all the completed todos when the user clicks 'All' in the 
+					 footer.
+	    ----------------------*/
 		getActiveTodos: function () {
+			// return this.todos array after .filter has been run.
 			return this.todos.filter(function (todo) {
+				// return item to the this.todos array if true.
 				return !todo.completed;
 			});
 			
-		},
+		},  // End getActiveTodos ->  Call Stack: gitFilteredTodos > render
+
+    /*************************************************************
+    *************************************************************/
+
+		/*----------------------
+		   getCompletedTodos
+		------------------------
+		Called from: render > getFilteredTodos > getCompletedTodos
+			Accepts: Does not accept any parameters, uses existing data on this.todos
+			Returns: An array of completed todos.
+				How: Takes this.todos array and uses .filter to return an array
+				     of completed todos.
+				Why: To display all the completed todos when the user clicks 'All' in the 
+				     footer.
+		----------------------*/
 		getCompletedTodos: function () {
+			// return this.todos array after .filter has been run.
 			return this.todos.filter(function (todo) {
+				// return item to the this.todos array if true.
 				return todo.completed;
 			});
-		},
-		getFilteredTodos: function () {
+		}, // End getCompletedTodos --->  Call Stack: 
+
+	/*************************************************************
+    *************************************************************/
+
+		/*----------------------
+			getFilteredTodos
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
+	    getFilteredTodos: function () {
 			if (this.filter === 'active') {
 				console.log(this.filter);
 				return this.getActiveTodos();
@@ -127,12 +235,29 @@ jQuery(function ($) {
 			}
 
 			return this.todos;
-		},
+		},  // End getFilteredTodos ->  Call Stack: 
+
+    /*************************************************************
+    *************************************************************/
+		
+	    /*----------------------
+			destroyCompleted
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
 		destroyCompleted: function () {
 			this.todos = this.getActiveTodos();
 			this.filter = 'all';
 			this.render();
-		},
+		}, // End destroyCompleted ->  Call Stack:
+
+    /*************************************************************
+    *************************************************************/
+
 		// accepts an element from inside the `.item` div and
 		// returns the corresponding index in the `todos` array
 		getIndexFromEl: function (el) {
@@ -145,7 +270,20 @@ jQuery(function ($) {
 					return i;
 				}
 			}
-		},
+		},  // End getIndexFromEl ->  Call Stack: 
+
+    /*************************************************************
+    *************************************************************/
+		
+	    /*----------------------
+			create
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
 		create: function (e) {
 			var $input = $(e.target);
 			var val = $input.val().trim();
@@ -163,17 +301,56 @@ jQuery(function ($) {
 			$input.val('');
 
 			this.render();
-		},
+		}, // End create ->  Call Stack:
+
+    /*************************************************************
+    *************************************************************/
+		
+	    /*----------------------
+			toggle
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
 		toggle: function (e) {
 			var i = this.getIndexFromEl(e.target);
 			this.todos[i].completed = !this.todos[i].completed;
 			this.render();
-		},
+		},  // End toggle ->  Call Stack:
+
+    /*************************************************************
+    *************************************************************/
+		
+	    /*----------------------
+			editingMode
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
 		editingMode: function (e) {
 			var $input = $(e.target).closest('li').addClass('editing').find('.edit');
 			var val = $input.val();
 			$input.val('').focus().val(val);
-		},
+		}, // End editingMode ->  Call Stack:
+
+    /*************************************************************
+    *************************************************************/
+		
+	    /*----------------------
+			editKeyup
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
 		editKeyup: function (e) {
 			if (e.which === ENTER_KEY) {
 				e.target.blur();
@@ -182,7 +359,20 @@ jQuery(function ($) {
 			if (e.which === ESCAPE_KEY) {
 				$(e.target).data('abort', true).blur();
 			}
-		},
+		},  // End editKeyup ->  Call Stack:
+
+    /*************************************************************
+    *************************************************************/
+		
+	    /*----------------------
+			update
+		------------------------
+		Called from: 
+			Accepts:
+			Returns:
+				How:
+				Why:
+		----------------------*/
 		update: function (e) {
 			var el = e.target;
 			var $el = $(el);
@@ -200,19 +390,22 @@ jQuery(function ($) {
 			}
 
 			this.render();
-		},
+		},  // End update ->  Call Stack:
+
+	/*************************************************************
+    *************************************************************/
 
 		/*----------------------
+		  destroy
 		------------------------
 		Called from: App.bindEvents (63, 69); App.update (192)
 		    Accepts: Object from a click event on an element with the class destroy - .on('click', '.destroy',... - 69
 		    Returns: Does not retun anything - processing.
 		        How: - Accepts object
-			     - gets position of object in the todos array - this.getIndexFromEl(e.target)
-			     - splice that item
+			         - gets position of object in the todos array - this.getIndexFromEl(e.target)
+			         - splice that item
 		             - Calls the render() function to display
 		        Why: To delete an item when that items .destroy element is clicked.
-		------------------------
 		----------------------*/
 		destroy: function (e) {
 			// e.target is sent to getIndexFromEl
@@ -221,22 +414,73 @@ jQuery(function ($) {
 			this.todos.splice(this.getIndexFromEl(e.target), 1);
 			// display
 			this.render();
-		}
+		}  // End destroy ->  Call Stack:
 
-	};
+	};  // ---- End App
 
 	App.init();
 
 });
 
+/*----------------------
+		 Map
+-------------------------
+
+jQuery {
+
+	Handlebars {}
+
+	CONST;
+	CONST;
+
+	util {
+
+		- uuid
+		- pluralize
+		- store
+
+	} -- End util --
+
+	App {
+
+		- init
+		- bindEvents
+		- render
+		- renderFooter
+		- toggleAll
+		- getActiveTodos
+		- getCompletedTodos
+		- getFilteredTodos
+		- destroyCompleted
+		- getIndexFromEl
+		- create
+		- toggle
+		- editingMode
+		- editKeyup
+		- update
+		- destroy
+
+	}  -- End App --
+
+	App.init();
+
+} -- End jQuery --
+
+
+
+
+Method template:
 
 /*----------------------
+    method name;
 ------------------------
 Called from: 
     Accepts:
     Returns:
         How:
         Why:
-------------------------
 ----------------------*/
+
+/*************************************************************
+*************************************************************/
 
