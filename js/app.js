@@ -41,7 +41,7 @@ jQuery(function ($) {
 	var App = {
 		/*----------------------
 			init
-        ------------------------
+                ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -67,8 +67,8 @@ jQuery(function ($) {
 		
 	    /*----------------------
 			bindEvents
-        ------------------------
-        Called from: 
+            ------------------------
+                Called from: 
 		    Accepts:
 		    Returns:
 		        How:
@@ -96,7 +96,7 @@ jQuery(function ($) {
 
 	    /*----------------------
 			render
-        ------------------------
+            ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -118,8 +118,8 @@ jQuery(function ($) {
     *************************************************************/
 
 	    /*----------------------
-			renderFooter
-        ------------------------
+	         renderFooter
+            ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -144,7 +144,7 @@ jQuery(function ($) {
 
 	    /*----------------------
 			toggleAll
-        ------------------------
+            ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -168,18 +168,18 @@ jQuery(function ($) {
 		},  // End toggleAll ->  Call Stack:
 
 	/*************************************************************
-    *************************************************************/
+        *************************************************************/
 
 		/*----------------------
 		   getActiveTodos
-        ------------------------
+                ------------------------
 		Called from: render > getFilteredTodos > getActiveTodos
-			Accepts: Does not accept any parameters, uses existing data - this.todos
-			Returns: An array of Active todos (todos !completed).
-				How: Takes this.todos array and uses .filter to return an array
-				     of completed todos.
-				Why: To display all the completed todos when the user clicks 'All' 
-					 in the footer.
+		    Accepts: Does not accept any parameters, uses existing data - this.todos
+		    Returns: An array of Active todos (todos !completed).
+		        How: Takes this.todos array and uses .filter to return an array
+		             of completed todos.
+		        Why: To display all the completed todos when the user clicks 'All' 
+                             in the footer.
 	    ----------------------*/
 		getActiveTodos: function () {
 			// return this.todos array after .filter has been run.
@@ -195,14 +195,14 @@ jQuery(function ($) {
 
 		/*----------------------
 		   getCompletedTodos
-        ------------------------
+                ------------------------
 		Called from: render > getFilteredTodos > getCompletedTodos
 			Accepts: Does not accept any parameters, uses existing data on this.todos
 			Returns: An array of completed todos.
-				How: Takes this.todos array and uses .filter to return an array
-				     of completed todos.
-				Why: To display all the completed todos when the user clicks 'All' in the 
-				     footer.
+		            How: Takes this.todos array and uses .filter to return an array
+			         of completed todos.
+		            Why: To display all the completed todos when the user clicks 'All' in the 
+		                 footer.
 		----------------------*/
 		getCompletedTodos: function () {
 			// return this.todos array after .filter has been run.
@@ -216,8 +216,8 @@ jQuery(function ($) {
     *************************************************************/
 
 		/*----------------------
-			getFilteredTodos
-        ------------------------
+	            getFilteredTodos
+                ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -241,8 +241,8 @@ jQuery(function ($) {
     *************************************************************/
 		
 	    /*----------------------
-			destroyCompleted
-        ------------------------
+                destroyCompleted
+            ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -276,8 +276,8 @@ jQuery(function ($) {
     *************************************************************/
 		
 	    /*----------------------
-			create
-        ------------------------
+	             create
+            ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -307,8 +307,8 @@ jQuery(function ($) {
     *************************************************************/
 		
 	    /*----------------------
-			toggle
-        ------------------------
+		    toggle
+            ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -325,8 +325,8 @@ jQuery(function ($) {
     *************************************************************/
 		
 	    /*----------------------
-			editingMode
-        ------------------------
+                   editingMode
+            ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -343,8 +343,8 @@ jQuery(function ($) {
     *************************************************************/
 		
 	    /*----------------------
-			editKeyup
-        ------------------------
+                 editKeyup
+            ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -366,7 +366,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
 			update
-        ------------------------
+            ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -393,11 +393,11 @@ jQuery(function ($) {
 		},  // End update ->  Call Stack:
 
 	/*************************************************************
-    *************************************************************/
+        *************************************************************/
 
 		/*----------------------
 		  destroy
-        ------------------------
+                ------------------------
 		Called from: App.bindEvents (63, 69); App.update (192)
 		    Accepts: Object from a click event on an element with the class destroy - .on('click', '.destroy',... - 69
 		    Returns: Does not retun anything - processing.
