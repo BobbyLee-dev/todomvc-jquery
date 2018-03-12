@@ -46,7 +46,7 @@ jQuery(function ($) {
 		    Accepts:
 		    Returns:
 			    How:
-			    Why:
+		        Why:
 		----------------------*/
 		init: function () {
 			this.todos = util.store('todos-jquery');
