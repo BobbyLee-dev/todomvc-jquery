@@ -45,7 +45,7 @@ jQuery(function ($) {
 		Called from: 
 		    Accepts:
 		    Returns:
-			    How:
+		        How:
 		        Why:
 		----------------------*/
 		init: function () {
