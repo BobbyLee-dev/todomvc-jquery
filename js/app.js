@@ -41,7 +41,7 @@ jQuery(function ($) {
 	var App = {
 		/*----------------------
 			init
-		------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -96,7 +96,7 @@ jQuery(function ($) {
 
 	    /*----------------------
 			render
-		------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -119,7 +119,7 @@ jQuery(function ($) {
 
 	    /*----------------------
 			renderFooter
-		------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -144,7 +144,7 @@ jQuery(function ($) {
 
 	    /*----------------------
 			toggleAll
-		------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -172,7 +172,7 @@ jQuery(function ($) {
 
 		/*----------------------
 		   getActiveTodos
-		------------------------
+        ------------------------
 		Called from: render > getFilteredTodos > getActiveTodos
 			Accepts: Does not accept any parameters, uses existing data - this.todos
 			Returns: An array of Active todos (todos !completed).
@@ -195,7 +195,7 @@ jQuery(function ($) {
 
 		/*----------------------
 		   getCompletedTodos
-		------------------------
+        ------------------------
 		Called from: render > getFilteredTodos > getCompletedTodos
 			Accepts: Does not accept any parameters, uses existing data on this.todos
 			Returns: An array of completed todos.
@@ -217,7 +217,7 @@ jQuery(function ($) {
 
 		/*----------------------
 			getFilteredTodos
-		------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -242,7 +242,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
 			destroyCompleted
-		------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -277,7 +277,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
 			create
-		------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -308,7 +308,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
 			toggle
-		------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -326,7 +326,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
 			editingMode
-		------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -344,7 +344,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
 			editKeyup
-		------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -366,7 +366,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
 			update
-		------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -397,7 +397,7 @@ jQuery(function ($) {
 
 		/*----------------------
 		  destroy
-		------------------------
+        ------------------------
 		Called from: App.bindEvents (63, 69); App.update (192)
 		    Accepts: Object from a click event on an element with the class destroy - .on('click', '.destroy',... - 69
 		    Returns: Does not retun anything - processing.
@@ -424,7 +424,7 @@ jQuery(function ($) {
 
 /*----------------------
 		 Map
--------------------------
+        -------------------------
 
 jQuery {
 
@@ -473,7 +473,7 @@ Method template:
 
 /*----------------------
     method name;
-------------------------
+        ------------------------
 Called from: 
     Accepts:
     Returns:
