@@ -67,12 +67,12 @@ jQuery(function ($) {
 		
 	    /*----------------------
 			bindEvents
-		------------------------
-		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+        ------------------------
+        Called from: 
+		    Accepts:
+		    Returns:
+		        How:
+		        Why:
 		----------------------*/
 		bindEvents: function () {
 			$('#new-todo').on('keyup', this.create.bind(this));
@@ -98,10 +98,10 @@ jQuery(function ($) {
 			render
 		------------------------
 		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+		    Accepts:
+		    Returns:
+		        How:
+		        Why:
 		----------------------*/
 		render: function () {
 			var todos = this.getFilteredTodos();
@@ -121,10 +121,10 @@ jQuery(function ($) {
 			renderFooter
 		------------------------
 		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+		    Accepts:
+		    Returns:
+		        How:
+		        Why:
 		----------------------*/
 		renderFooter: function () {
 			var todoCount = this.todos.length;
@@ -146,10 +146,10 @@ jQuery(function ($) {
 			toggleAll
 		------------------------
 		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+		    Accepts:
+		    Returns:
+		        How:
+		        Why:
 		----------------------*/
 		toggleAll: function (e) {
 			// the checked value is already set before this function is run.
@@ -219,10 +219,10 @@ jQuery(function ($) {
 			getFilteredTodos
 		------------------------
 		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+		    Accepts:
+		    Returns:
+		        How:
+		        Why:
 		----------------------*/
 	    getFilteredTodos: function () {
 			if (this.filter === 'active') {
@@ -244,10 +244,10 @@ jQuery(function ($) {
 			destroyCompleted
 		------------------------
 		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+		    Accepts:
+		    Returns:
+		        How:
+		        Why:
 		----------------------*/
 		destroyCompleted: function () {
 			this.todos = this.getActiveTodos();
@@ -279,10 +279,10 @@ jQuery(function ($) {
 			create
 		------------------------
 		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+		    Accepts:
+		    Returns:
+		        How:
+		        Why:
 		----------------------*/
 		create: function (e) {
 			var $input = $(e.target);
@@ -310,10 +310,10 @@ jQuery(function ($) {
 			toggle
 		------------------------
 		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+		    Accepts:
+		    Returns:
+		        How:
+		        Why:
 		----------------------*/
 		toggle: function (e) {
 			var i = this.getIndexFromEl(e.target);
@@ -328,10 +328,10 @@ jQuery(function ($) {
 			editingMode
 		------------------------
 		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+		    Accepts:
+		    Returns:
+		        How:
+		        Why:
 		----------------------*/
 		editingMode: function (e) {
 			var $input = $(e.target).closest('li').addClass('editing').find('.edit');
@@ -346,10 +346,10 @@ jQuery(function ($) {
 			editKeyup
 		------------------------
 		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+		    Accepts:
+		    Returns:
+		        How:
+		        Why:
 		----------------------*/
 		editKeyup: function (e) {
 			if (e.which === ENTER_KEY) {
@@ -368,10 +368,10 @@ jQuery(function ($) {
 			update
 		------------------------
 		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+		    Accepts:
+		    Returns:
+		        How:
+		        Why:
 		----------------------*/
 		update: function (e) {
 			var el = e.target;
