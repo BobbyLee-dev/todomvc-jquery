@@ -43,10 +43,10 @@ jQuery(function ($) {
 			init
 		------------------------
 		Called from: 
-			Accepts:
-			Returns:
-				How:
-				Why:
+		    Accepts:
+		    Returns:
+			How:
+			Why:
 		----------------------*/
 		init: function () {
 			this.todos = util.store('todos-jquery');
