@@ -94,9 +94,9 @@ jQuery(function ($) {
     /*************************************************************
     *************************************************************/
 
-	    /*----------------------
+	 /*----------------------
 			render
-      ------------------------
+  ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -272,9 +272,6 @@ jQuery(function ($) {
                  - Return items position in todos array.
             Why: To locate and return the index of an item in the todos array.
     ----------------------*/
-
-		// accepts an element from inside the `.item` div and
-		// returns the corresponding index in the `todos` array
 		getIndexFromEl: function (el) {
 			var id = $(el).closest('li').data('id');
 			var todos = this.todos;
