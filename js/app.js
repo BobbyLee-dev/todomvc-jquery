@@ -402,8 +402,8 @@ jQuery(function ($) {
 		    Accepts: Object from a click event on an element with the class destroy - .on('click', '.destroy',... - 69
 		    Returns: Does not retun anything - processing.
 		        How: - Accepts object
-		             - gets position of object in the todos array - this.getIndexFromEl(e.target)
-                     - splice that item
+		             - gets position of object in the todos array - this.getIndexFromEl(e.target
+		             - splice that item
                      - Calls the render() function to display
 		        Why: To delete an item when that items .destroy element is clicked.
 		----------------------*/
