@@ -258,6 +258,21 @@ jQuery(function ($) {
     /*************************************************************
     *************************************************************/
 
+    /*------------------------
+          getIndexFromEl
+    --------------------------
+    Called from: toggle, update, destroy
+        Accepts: e.target - element that was clicked.
+        Returns: Index/position of element in the todos array.
+            How: - When called, e.target (element that was clicked) 
+                   gets passed into getIndexFromEl as an argument.
+                 - The data id is found.
+                 - while loop to find the item in the todos array
+                   with the same data id.
+                 - Return items position in todos array.
+            Why: To locate and return the index of an item in the todos array.
+    ----------------------*/
+
 		// accepts an element from inside the `.item` div and
 		// returns the corresponding index in the `todos` array
 		getIndexFromEl: function (el) {
@@ -265,6 +280,7 @@ jQuery(function ($) {
 			var todos = this.todos;
 			var i = todos.length;
 
+      // Shorthand way of saying while i is grater than 0.
 			while (i--) {
 				if (todos[i].id === id) {
 					return i;
@@ -400,7 +416,8 @@ jQuery(function ($) {
 		        destroy
     ------------------------
 		Called from: App.bindEvents (63, 69); App.update (192)
-		    Accepts: Object from a click event on an element with the class destroy - .on('click', '.destroy',... - 69
+		    Accepts: Object from a click event on an element with the class destroy -
+                 .on('click', '.destroy',... - 69
 		    Returns: Does not retun anything - processing.
 		        How: - Accepts object
 		             - gets position of object in the todos array - this.getIndexFromEl(e.target
