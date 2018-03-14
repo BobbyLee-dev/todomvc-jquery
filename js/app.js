@@ -258,26 +258,26 @@ jQuery(function ($) {
     /*************************************************************
     *************************************************************/
 
-    /*------------------------
-          getIndexFromEl
-    --------------------------
-    Called from: toggle, update, destroy
-        Accepts: e.target - element that was clicked.
-        Returns: Index/position of element in the todos array.
-            How: - When called, e.target (element that was clicked) 
-                   gets passed into getIndexFromEl as an argument.
-                 - The data id is found.
-                 - while loop to find the item in the todos array
-                   with the same data id.
-                 - Return items position in todos array.
-            Why: To locate and return the index of an item in the todos array.
-    ----------------------*/
+	    /*------------------------
+	          getIndexFromEl
+	    --------------------------
+	    Called from: toggle, update, destroy
+	        Accepts: e.target - element that was clicked.
+	        Returns: Index/position of element in the todos array.
+	            How: - When called, e.target (element that was clicked) 
+	                   gets passed into getIndexFromEl as an argument.
+	                 - The data id is found.
+	                 - while loop to find the item in the todos array
+	                   with the same data id.
+	                 - Return items position in todos array.
+	            Why: To locate and return the index of an item in the todos array.
+        ----------------------*/
 		getIndexFromEl: function (el) {
 			var id = $(el).closest('li').data('id');
 			var todos = this.todos;
 			var i = todos.length;
 
-      // Shorthand way of saying while i is grater than 0.
+      // Shorthand way of saying while i > 0.
 			while (i--) {
 				if (todos[i].id === id) {
 					return i;
@@ -290,7 +290,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
 	         create
-      ------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -321,7 +321,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
 		        toggle
-      ------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -339,7 +339,7 @@ jQuery(function ($) {
 		
 	  /*----------------------
           editingMode
-    ------------------------
+      ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -357,7 +357,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
             editKeyup
-      ------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -377,9 +377,9 @@ jQuery(function ($) {
     /*************************************************************
     *************************************************************/
 		
-	  /*----------------------
+	    /*----------------------
 			update
-    ------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -406,15 +406,15 @@ jQuery(function ($) {
 		},  // End update ->  Call Stack:
 
 	/***************************************************************
-  ***************************************************************/
+    ***************************************************************/
     
 
 		/*----------------------
 		        destroy
-    ------------------------
+        ------------------------
 		Called from: App.bindEvents (63, 69); App.update (192)
 		    Accepts: Object from a click event on an element with the class destroy -
-                 .on('click', '.destroy',... - 69
+                     .on('click', '.destroy',... - 69
 		    Returns: Does not retun anything - processing.
 		        How: - Accepts object
 		             - gets position of object in the todos array - this.getIndexFromEl(e.target
@@ -423,11 +423,29 @@ jQuery(function ($) {
 		        Why: To delete an item when that items .destroy element is clicked.
 		----------------------*/
 		destroy: function (e) {
+			var todoPosition = this.getIndexFromEl(e.target);
+
+			this.destroyedTodosArray(this.todos[todoPosition]);
 			// getIndexFromEl figures out what item in the todos array has been clicked
-			this.todos.splice(this.getIndexFromEl(e.target), 1);
+			this.todos.splice(todoPosition, 1);
 			// display
 			this.render();
-		}  // End destroy ->  Call Stack: Does not return anything, calls render.
+
+
+
+
+		},  // End destroy ->  Call Stack: Does not return anything, calls render.
+		destroyedTodosArray: function (destroyedTodo) {
+			var destroyedList = [];
+			destroyedList.push(destroyedTodo);
+			this.displayDestroyed(destroyedTodo);
+		},
+		displayDestroyed: function (todo) {
+			var destroyedUl = document.getElementById('destroyed-todos');
+			var destroyedLi = document.createElement('li');
+			destroyedLi.textContent = todo.title;
+			destroyedUl.appendChild(destroyedLi);
+		}
 
 	};  // ---- End App
 
