@@ -97,9 +97,9 @@ jQuery(function ($) {
     /*************************************************************
     *************************************************************/
 
-	 /*----------------------
+	    /*----------------------
 			render
-  ------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -122,7 +122,7 @@ jQuery(function ($) {
 
 	    /*----------------------
 	         renderFooter
-      ------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -148,25 +148,31 @@ jQuery(function ($) {
 	    /*----------------------
 			toggleAll
         ------------------------
-		Called from: 
-		    Accepts:
-		    Returns:
-		        How:
-		        Why:
+		Called from: An event listener on an element with the id #toggle-all.
+		    Accepts: Event object. 
+		    Returns: Does not return anything, updates the .completed 
+		             property of all todos.
+		        How: - When #toggle-all is clicked the #toggle-all's .checked
+		               property changes, then this function get's fired.
+		             - The variable isChecked gets set to the
+		               .checked value of #toggle-all. 
+		             - loop through all todos and set the copmleted value
+		               to isChecked.
+		       Note: #toggle-all.checked value can change in two ways:
+		             1. #toggle-all is clicked.
+		             2. all todos are manually toggled to the same 
+		                .completed value.
+		        Why: To toggle/change/update all the todos .completed 
+		             value to the same value. 
 		----------------------*/
 		toggleAll: function (e) {
-			// the checked value is already set before this function is run.
-			// This function just looks at what that value is.
-			// the value will chage because of default behavior of an input element type="checkbox"
-			// this is clever...
-			// getting the #toggleAll checked value and setting it to isChecked.
-			// #toggleAll is an <input> element with type="checkbox" this a a checked property. 
+			// the checked value of the #toggle-all element 
+			// is already set before this function is run.
+		 
 			var isChecked = $(e.target).prop('checked');
-			// set all todos to what the checked value is.
 			this.todos.forEach(function (todo) {
 				todo.completed = isChecked;
 			});
-
 			this.render();
 		},  // End toggleAll ->  Call Stack:
 
@@ -182,7 +188,7 @@ jQuery(function ($) {
 		        How: Takes this.todos array and uses .filter to return an array
 		             of completed todos.
 		        Why: To display all the completed todos when the user clicks 'All' 
-                     in the footer.
+                     or 'Active' in the footer.
 	    ----------------------*/
 		getActiveTodos: function () {
 			// return this.todos array after .filter has been run.
@@ -213,7 +219,7 @@ jQuery(function ($) {
 				// return item to the this.todos array if true.
 				return todo.completed;
 			});
-		}, // End getCompletedTodos --->  Call Stack: 
+		}, // End getCompletedTodos --->  Call Stack: getCompletedTodos > getFilteredTodos > render
 
 	/*************************************************************
     *************************************************************/
@@ -221,15 +227,22 @@ jQuery(function ($) {
 		/*----------------------
 	     getFilteredTodos
         ------------------------
-		Called from: 
-		    Accepts:
-		    Returns:
-		        How:
-		        Why:
+		Called from: render
+		    Accepts: Does not accept any parameters, uses existing data on this.todos
+		    Returns: An array of todos depending on what filter was clicked:
+		             if the 'Active' button (filter) was clicked it returns an
+		             array of active todos.
+		        How: - If filter/button === 'active' the active button was clicked,
+		               call getActiveTodos and return array. - end function.
+		             - If filter/button === 'completed' the completed button was clicked,
+		               call getCompletedTodos and return array. end function.
+		             - If/(else) filter/button === 'All' the All button was clicked,
+		               return all todos. - no need for another if or else statement. end function.
+		        Why: To return/filter todos based on what filter/button was clicked.
+
 		----------------------*/
 	    getFilteredTodos: function () {
 			if (this.filter === 'active') {
-				console.log(this.filter);
 				return this.getActiveTodos();
 			}
 
@@ -238,7 +251,7 @@ jQuery(function ($) {
 			}
 
 			return this.todos;
-		},  // End getFilteredTodos ->  Call Stack: 
+		},  // End getFilteredTodos ->  Call Stack: getFilteredTodos > render
 
     /*************************************************************
     *************************************************************/
@@ -246,11 +259,23 @@ jQuery(function ($) {
 	    /*----------------------
          destroyCompleted
         ------------------------
-		Called from: 
-		    Accepts:
-		    Returns:
-		        How:
-		        Why:
+		Called from: Event listener on #clear-completed - only visible/available
+		             when there is at least one todo that has been completed - 
+		             .completed = true;
+		    Accepts: Does not accept any parameters, uses existing data on this.todos
+		    Returns: Does not return anything updates todos array and calls render.
+		        How: - Is fired when #clear-completed is clicked - this button
+		               is only available when there is at least one todo that has been
+		               completed.
+		             - Sets this.todos to active todos - todos that have not been 
+		               completed.
+		             - Sets the filter to 'All' - to display all todos that are left.
+		               This is clever - after #clear-completed is cilcked there will no longer
+		               be any Completed todos and all todos left will be Active so 
+		               setting the filter/view to All makes sense.
+		             - Call render.
+		        Why: To generate and display a new todos array with only
+		             the Active (not completed) todos.
 		----------------------*/
 		destroyCompleted: function () {
 			this.todos = this.getActiveTodos();
@@ -334,21 +359,21 @@ jQuery(function ($) {
 		               in the todos array.
 		             - Changes/updates the completed property of that item.
 		             - Calls render.
-		        Why: 
+		        Why: To toggle/change/update the completed property of an
+		             item in the todos array - a todo.
 		----------------------*/
 		toggle: function (e) {
-			console.log(e);
 			var i = this.getIndexFromEl(e.target);
 			this.todos[i].completed = !this.todos[i].completed;
 			this.render();
-		},  // End toggle ->  Call Stack:
+		},  // End toggle ->  Call Stack: 
 
   /*************************************************************
   *************************************************************/
 		
-	  /*----------------------
+	    /*----------------------
           editingMode
-    ------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -415,12 +440,12 @@ jQuery(function ($) {
 		},  // End update ->  Call Stack:
 
 	/***************************************************************
-  ***************************************************************/
+    ***************************************************************/
     
 
 		/*----------------------
 		        destroy
-    ------------------------
+        ------------------------
 		Called from: App.bindEvents (63, 69); App.update (192)
 		    Accepts: Object from a click event on an element with the class destroy -
                      .on('click', '.destroy',... - 69
