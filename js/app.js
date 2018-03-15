@@ -75,6 +75,9 @@ jQuery(function ($) {
 		        Why:
 		----------------------*/
 		bindEvents: function () {
+			function whatIsThis () {
+				console.log(this.bind(this));
+			} 
 			$('#new-todo').on('keyup', this.create.bind(this));
 			// .on('change') doesn't necessarily trigger this event listener.
 			// for ex. if a user toggles all todo's individually without clicking toggleAll
@@ -179,7 +182,7 @@ jQuery(function ($) {
 		        How: Takes this.todos array and uses .filter to return an array
 		             of completed todos.
 		        Why: To display all the completed todos when the user clicks 'All' 
-                 in the footer.
+                     in the footer.
 	    ----------------------*/
 		getActiveTodos: function () {
 			// return this.todos array after .filter has been run.
@@ -195,12 +198,12 @@ jQuery(function ($) {
 
 		/*----------------------
 		   getCompletedTodos
-    ------------------------
+        ------------------------
 		Called from: render > getFilteredTodos > getCompletedTodos
-			  Accepts: Does not accept any parameters, uses existing data on this.todos
-			  Returns: An array of completed todos.
+			Accepts: Does not accept any parameters, uses existing data on this.todos
+			Returns: An array of completed todos.
 		        How: Takes this.todos array and uses .filter to return an array
-			           of completed todos.
+			         of completed todos.
 		        Why: To display all the completed todos when the user clicks 'All' in the 
 		             footer.
 		----------------------*/
@@ -213,11 +216,11 @@ jQuery(function ($) {
 		}, // End getCompletedTodos --->  Call Stack: 
 
 	/*************************************************************
-  *************************************************************/
+    *************************************************************/
 
 		/*----------------------
 	     getFilteredTodos
-    ------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -242,7 +245,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
          destroyCompleted
-      ------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -258,20 +261,20 @@ jQuery(function ($) {
     /*************************************************************
     *************************************************************/
 
-    /*------------------------
+        /*------------------------
           getIndexFromEl
-    --------------------------
-    Called from: toggle, update, destroy
-        Accepts: e.target - element that was clicked.
-        Returns: Index/position of element in the todos array.
-            How: - When called, e.target (element that was clicked) 
-                   gets passed into getIndexFromEl as an argument.
-                 - The data id is found.
-                 - while loop to find the item in the todos array
-                   with the same data id.
-                 - Return items position in todos array.
-            Why: To locate and return the index of an item in the todos array.
-    ----------------------*/
+        --------------------------
+        Called from: toggle, update, destroy
+            Accepts: e.target - element that was clicked.
+            Returns: Index/position of element in the todos array.
+                How: - When called, e.target (element that was clicked) 
+                       gets passed into getIndexFromEl as an argument.
+                     - The data id is found.
+                     - while loop to find the item in the todos array
+                       with the same data id.
+                     - Return items position in todos array.
+                Why: To locate and return the index of an item in the todos array.
+        ----------------------*/
 		getIndexFromEl: function (el) {
 			var id = $(el).closest('li').data('id');
 			var todos = this.todos;
@@ -290,7 +293,7 @@ jQuery(function ($) {
 		
 	    /*----------------------
 	         create
-      ------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
@@ -321,14 +324,20 @@ jQuery(function ($) {
 		
 	    /*----------------------
 		        toggle
-      ------------------------
-		Called from: 
-		    Accepts:
-		    Returns:
-		        How:
-		        Why:
+        ------------------------
+		Called from: bind event listener, fires on change/click of an element
+		             with the .toggle class.
+		    Accepts: event object - element that was clicked.
+		    Returns: Doesn't return anything, updates the 
+		             completed property on a todo.
+		        How: - Sets i to the position/index of the clicked item.
+		               in the todos array.
+		             - Changes/updates the completed property of that item.
+		             - Calls render.
+		        Why: 
 		----------------------*/
 		toggle: function (e) {
+			console.log(e);
 			var i = this.getIndexFromEl(e.target);
 			this.todos[i].completed = !this.todos[i].completed;
 			this.render();
@@ -414,7 +423,7 @@ jQuery(function ($) {
     ------------------------
 		Called from: App.bindEvents (63, 69); App.update (192)
 		    Accepts: Object from a click event on an element with the class destroy -
-                 .on('click', '.destroy',... - 69
+                     .on('click', '.destroy',... - 69
 		    Returns: Does not retun anything - processing.
 		        How: - Accepts object
 		             - gets position of object in the todos array - this.getIndexFromEl(e.target
