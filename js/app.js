@@ -305,7 +305,7 @@ jQuery(function ($) {
 			var todos = this.todos;
 			var i = todos.length;
 
-      // Shorthand way of saying while i is grater than 0.
+      // Shorthand way of saying while i is grater than 0 run then subtract 1.
 			while (i--) {
 				if (todos[i].id === id) {
 					return i;
@@ -383,6 +383,8 @@ jQuery(function ($) {
 		editingMode: function (e) {
 			var $input = $(e.target).closest('li').addClass('editing').find('.edit');
 			var val = $input.val();
+			// console.log($input.val('').focus());
+
 			$input.val('').focus().val(val);
 		}, // End editingMode ->  Call Stack:
 
