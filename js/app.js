@@ -163,8 +163,7 @@ jQuery(function ($) {}
 		},
 		editingMode: function (e) {
 			var $input = $(e.target).closest('li').addClass('editing').find('.edit');
-			var val = $input.val();
-			$input.val('').focus().val(val);
+			$input.focus().select();
 		},
 		editKeyup: function (e) {
 			if (e.which === ENTER_KEY) {
