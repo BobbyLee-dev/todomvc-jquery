@@ -179,7 +179,11 @@ jQuery(function ($) {
 			var $el = $(el);
 			var val = $el.val().trim();
 
-			if (!val) {
+
+			// added $el.data('abort') - when user removed value then pressed
+			// esc key the todo would be destroyed, I though the esc key 
+			// should not destroy the todo even when there was no value.
+			if (!val && !$el.data('abort')) {
 				this.destroy(e);
 				return;
 			}
@@ -202,6 +206,8 @@ jQuery(function ($) {
 			this.render();
 
 		},  
+
+		// creating a new feature, adding a list of destroyed todos
 		destroyedTodosArray: function (destroyedTodo) {
 			var destroyedList = [];
 			destroyedList.push(destroyedTodo);
