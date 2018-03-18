@@ -346,7 +346,7 @@ jQuery(function ($) {
 			if (e.which !== ENTER_KEY || !val) {
 				return;
 			}
-
+		
 			this.todos.push({
 				id: util.uuid(),
 				title: val,
@@ -356,6 +356,7 @@ jQuery(function ($) {
 			$input.val('');
 
 			this.render();
+	
 		}, // End create ->  Call Stack:
 
     /*************************************************************
@@ -388,18 +389,24 @@ jQuery(function ($) {
 	    /*----------------------
           editingMode
         ------------------------
-		Called from: 
-		    Accepts:
-		    Returns:
-		        How:
-		        Why:
+		Called from: Event listener is set up in bindEvents on a label in #todo-list
+		             when a <label> is dblclick within #todo-list.
+		    Accepts: event object - element that was clicked.
+		    Returns: Does not return anything adds a class to the li element that 
+		             was double clicked and finds the element with 
+		             the .edit class. 
+		        How: - Sets $input to the element that was clicked
+		             - finds the closest li and adds the class editing.
+		             - finds and sets $input to the element with the 
+		             class .edit.
+		             - Takes that input element and calls focus which 
+		             places the curser in that element.
+		        Why: To make the input element visible and give it the focus/curser.
+		             - by default the input element on the list is hidden.
 		----------------------*/
 		editingMode: function (e) {
 			var $input = $(e.target).closest('li').addClass('editing').find('.edit');
-			var val = $input.val();
-			// console.log($input.val('').focus());
-
-			$input.val('').focus().val(val);
+			$input.focus().select();
 		}, // End editingMode ->  Call Stack:
 
     /*************************************************************
@@ -407,14 +414,30 @@ jQuery(function ($) {
 		
 	    /*----------------------
             editKeyup
-      ------------------------
-		Called from: 
-		    Accepts:
-		    Returns:
-		        How:
-		        Why:
+        ------------------------
+		Called from: Event listener is set up in bindEvents on an element
+		             with the class .edit. (keyup) - this method
+		             gets fired every keyup.
+		    Accepts: event object from element that was clicked.
+		    Returns: Does not return anything. Looks to see if the 
+		             enter key or esc key was pressed and if it was
+		             removes the focus from the elemment.
+		             If the enter key was pressed the data entered stays.
+		             If esc key was pushed it removes data that was 
+		             entered. 
+		        How: on keyup:
+		        	 - If the enter key was pressed remove focus and
+		        	   leave data as is.
+		        	 - If esc key was pressed remove modifed data and 
+		        	   return it to was it was then remove the focus.
+		        	 - Note that if the user deletes all data so it is empty
+		        	   then presses esc, the item will be destroyed. 
+		        	   look at update - if (!val)
+		        Why: To see if the enter or esc was pressed, and if so remove focus.
 		----------------------*/
 		editKeyup: function (e) {
+			var test = e.target.value;
+
 			if (e.which === ENTER_KEY) {
 				e.target.blur();
 			}
@@ -427,9 +450,9 @@ jQuery(function ($) {
     /*************************************************************
     *************************************************************/
 		
-	  /*----------------------
+	    /*----------------------
 			update
-    ------------------------
+        ------------------------
 		Called from: 
 		    Accepts:
 		    Returns:
