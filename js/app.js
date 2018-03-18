@@ -319,16 +319,30 @@ jQuery(function ($) {
 	    /*----------------------
 	         create
         ------------------------
-		Called from: 
-		    Accepts:
-		    Returns:
-		        How:
-		        Why:
+		Called from: Event listener is set up in bindEvents on the
+		             #new-todo element - keyup fires everytime a key is released. 
+		    Accepts: Event object from #new-todo on keyup.
+		    Returns: Does not return a value:
+					 - creates a new item on this.todos
+		        How: - if the keypressed was not the enter key
+		               or if the enter key was pressed 
+		               but there is no value in #new-todo - return.
+		             - if the enter key was pressed and there is a value
+		               in #new-todo push new item to this.todos
+		               - create/set unique id
+		               - set #new-todo value as the title
+		               - set the completed property to flase
+		             - clear $input/#new-todo.
+		             - render
+		        Why: To create a new item on this.todos.
 		----------------------*/
 		create: function (e) {
 			var $input = $(e.target);
 			var val = $input.val().trim();
-
+			
+			// 1st - was the enter key pressed
+			// 2nd - if enter was pressed was there a value in #new-todo. 
+			// return uless enter key was pressed and the value is not empty.
 			if (e.which !== ENTER_KEY || !val) {
 				return;
 			}
