@@ -453,11 +453,35 @@ jQuery(function ($) {
 	    /*----------------------
 			update
         ------------------------
-		Called from: 
-		    Accepts:
-		    Returns:
-		        How:
-		        Why:
+		Called from: event listener set up in bind - .on('focusout', '.edit'
+		             when an element is in editing mode - has the .edit class
+		             and focus is moved out this method gets fired.
+		    Accepts: event object
+		    Returns: Does not return anything, it returns to break out of 
+		             the function in specific situations. 
+		        How: - Set el to the element that was clicked.
+		             - Wrap $el in the jQuery version of the element that was clicked.
+		               to give it access to the jQuery lib. Specifically the data method -
+		               Store arbitrary data associated with the specified element and/or 
+		               return the value that was set. 
+		               - in editKeyUp() data was used to set the attribute 'abort', true 
+		                 on the todo that is being edited to detect if the esc key was used.
+		                 If the esc key was used don't errase/destroy anything.
+		             - trim the white space if any off the begining and end of the value
+		               and set it to val.
+		             - if (!val) - if the value is empty (nothing in the todo - blank)
+		               destroy that todo, because it's blank, and retun - leave function.
+		               - I decided that I didn't want the user to be able to destroy a todo
+		                 while editing a todo so I removed the call to destroy and added
+		                 this.render(). - If a user erases the title/val of a todo
+		                 and focus is lost the todo will remain, to destroy a todo they 
+		                 will have to explicitly delete it.
+		             - If the element has the 'abort' property set the property to false 
+		               then call render.
+		             - If esc key was not pressed - the item does not have the 'abort' property
+		               so set the title to the value - edited todo.
+		             - render.
+		        Why: To update a todo on foucsOut when an item is in ediingMode.
 		----------------------*/
 		update: function (e) {
 			var el = e.target;
@@ -465,10 +489,12 @@ jQuery(function ($) {
 			var val = $el.val().trim();
 
 			if (!val) {
-				this.destroy(e);
+				// this.destroy(e);
+				this.render();
 				return;
 			}
 
+			// 'abort' - added to todo in editKeyup if esc key was pressed.
 			if ($el.data('abort')) {
 				$el.data('abort', false);
 			} else {
