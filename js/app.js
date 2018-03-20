@@ -60,7 +60,7 @@ jQuery(function ($) {
 			$('#footer').on('click', '#clear-completed', this.destroyCompleted.bind(this));
 			$('#todo-list')
 				.on('change', '.toggle', this.toggle.bind(this))
-				.on('dblclick', 'label', this.editingMode.bind(this))
+				.on('click', 'label', this.editingMode.bind(this))
 				.on('keyup', '.edit', this.editKeyup.bind(this))
 				.on('focusout', '.edit', this.update.bind(this))
 				.on('click', '.destroy', this.destroy.bind(this));
@@ -180,13 +180,14 @@ jQuery(function ($) {
 			var val = $el.val().trim();
 
 
-			// added $el.data('abort') - when user removed value then pressed
-			// esc key the todo would be destroyed, I though the esc key 
-			// should not destroy the todo even when there was no value.
-			if (!val && !$el.data('abort')) {
-				this.destroy(e);
+			
+			if (!val) {
+				// this.destroy(e);
+				this.render()
 				return;
 			}
+
+
 
 			if ($el.data('abort')) {
 				$el.data('abort', false);
