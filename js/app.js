@@ -1,4 +1,4 @@
-/*global jQuery, Handlebars, Router test */
+/*global jQuery, Handlebars, Router */
 jQuery(function ($) {
 	'use strict';
 
@@ -85,13 +85,13 @@ jQuery(function ($) {
 			// https://developer.mozilla.org/en-US/docs/Web/Events/change
 			// *** if the change happens from javascript - 
 			$('#toggle-all').on('change', this.toggleAll.bind(this));
-			$('#footer').on('click', '#clear-completed', this.destroyCompleted.bind(this));
+			$('#footer').on('click', '#clear-completed', this.removeCompleted.bind(this));
 			$('#todo-list')
 				.on('change', '.toggle', this.toggle.bind(this))
 				.on('dblclick', 'label', this.editingMode.bind(this))
 				.on('keyup', '.edit', this.editKeyup.bind(this))
 				.on('focusout', '.edit', this.update.bind(this))
-				.on('click', '.destroy', this.destroy.bind(this));
+				.on('click', '.remove', this.remove.bind(this));
 		}, // End bindEvents ->  Call Stack:
 
     /*************************************************************
@@ -108,7 +108,13 @@ jQuery(function ($) {
 		----------------------*/
 		render: function () {
 			var todos = this.getFilteredTodos();
-			$('#todo-list').html(this.todoTemplate(todos));
+			// To filter todos that have not been removed
+			var notRemoved = todos.filter(function (todo) {
+				if (todo.removed === false) {
+					return todo;
+				}
+			});
+			$('#todo-list').html(this.todoTemplate(notRemoved));
 			$('#main').toggle(todos.length > 0);
 			$('#toggle-all').prop('checked', this.getActiveTodos().length === 0);
 			
@@ -131,7 +137,7 @@ jQuery(function ($) {
 		----------------------*/
 		renderFooter: function () {
 			var todoCount = this.todos.length;
-			var activeTodoCount = this.getActiveTodos().length;
+			var activeTodoCount = this.getNotRemovedActiveTodos().length;
 			var template = this.footerTemplate({
 				activeTodoCount: activeTodoCount,
 				activeTodoWord: util.pluralize(activeTodoCount, 'item'),
@@ -201,7 +207,20 @@ jQuery(function ($) {
 
     /*************************************************************
     *************************************************************/
+		/*----------------------
+		   getNotRemovedActiveTodos
+        ------------------------
+		- this is called from render footer.
+		  it will return the number of active todos
+		  that have their removed property set to 
+		  false.
+	    ----------------------*/
 
+    	getNotRemovedActiveTodos: function () {
+    		return this.todos.filter(function (todo) {
+				return !todo.removed;
+			});
+    	},
 		/*----------------------
 		   getCompletedTodos
         ------------------------
@@ -259,29 +278,20 @@ jQuery(function ($) {
 	    /*----------------------
          destroyCompleted
         ------------------------
-		Called from: Event listener on #clear-completed - only visible/available
-		             when there is at least one todo that has been completed - 
-		             .completed = true;
-		    Accepts: Does not accept any parameters, uses existing data on this.todos
-		    Returns: Does not return anything updates todos array and calls render.
-		        How: - Is fired when #clear-completed is clicked - this button
-		               is only available when there is at least one todo that has been
-		               completed.
-		             - Sets this.todos to active todos - todos that have not been 
-		               completed.
-		             - Sets the filter to 'All' - to display all todos that are left.
-		               This is clever - after #clear-completed is cilcked there will no longer
-		               be any Completed todos and all todos left will be Active so 
-		               setting the filter/view to All makes sense.
-		             - Call render.
-		        Why: To generate and display a new todos array with only
-		             the Active (not completed) todos.
+		- To update the removed property of each todo to ture when
+		clear completed is pressed. This will affect where the 
+		todo is displayed. - todo list or removed list.
 		----------------------*/
-		destroyCompleted: function () {
-			this.todos = this.getActiveTodos();
+		removeCompleted: function () {
+			var removed = this.getCompletedTodos();
+			
+			removed.forEach(function(todo) {
+				todo.removed = true;
+			}, this);
 			this.filter = 'all';
 			this.render();
-		}, // End destroyCompleted ->  Call Stack:
+			console.log(this.todos);
+		}, 
 
     /*************************************************************
     *************************************************************/
@@ -350,7 +360,9 @@ jQuery(function ($) {
 			this.todos.push({
 				id: util.uuid(),
 				title: val,
-				completed: false
+				completed: false,
+				removed: false,
+				destroyed: false
 			});
 
 			$input.val('');
@@ -453,35 +465,7 @@ jQuery(function ($) {
 	    /*----------------------
 			update
         ------------------------
-		Called from: event listener set up in bind - .on('focusout', '.edit'
-		             when an element is in editing mode - has the .edit class
-		             and focus is moved out this method gets fired.
-		    Accepts: event object
-		    Returns: Does not return anything, it returns to break out of 
-		             the function in specific situations. 
-		        How: - Set el to the element that was clicked.
-		             - Wrap $el in the jQuery version of the element that was clicked.
-		               to give it access to the jQuery lib. Specifically the data method -
-		               Store arbitrary data associated with the specified element and/or 
-		               return the value that was set. 
-		               - in editKeyUp() data was used to set the attribute 'abort', true 
-		                 on the todo that is being edited to detect if the esc key was used.
-		                 If the esc key was used don't errase/destroy anything.
-		             - trim the white space if any off the begining and end of the value
-		               and set it to val.
-		             - if (!val) - if the value is empty (nothing in the todo - blank)
-		               destroy that todo, because it's blank, and retun - leave function.
-		               - I decided that I didn't want the user to be able to destroy a todo
-		                 while editing a todo so I removed the call to destroy and added
-		                 this.render(). - If a user erases the title/val of a todo
-		                 and focus is lost the todo will remain, to destroy a todo they 
-		                 will have to explicitly delete it.
-		             - If the element has the 'abort' property set the property to false 
-		               then call render.
-		             - If esc key was not pressed - the item does not have the 'abort' property
-		               so set the title to the value - edited todo.
-		             - render.
-		        Why: To update a todo on foucsOut when an item is in ediingMode.
+		
 		----------------------*/
 		update: function (e) {
 			var el = e.target;
@@ -489,7 +473,7 @@ jQuery(function ($) {
 			var val = $el.val().trim();
 
 			if (!val) {
-				// this.destroy(e);
+				
 				this.render();
 				return;
 			}
@@ -509,24 +493,19 @@ jQuery(function ($) {
     
 
 		/*----------------------
-		        destroy
+		        remove
         ------------------------
-		Called from: App.bindEvents (63, 69); App.update (192)
-		    Accepts: Object from a click event on an element with the class destroy -
-                     .on('click', '.destroy',... - 69
-		    Returns: Does not retun anything - processing.
-		        How: - Accepts object
-		             - gets position of object in the todos array - this.getIndexFromEl(e.target
-		             - splice that item
-		             - Calls the render() function to display
-		        Why: To delete an item when that items .destroy element is clicked.
+		- To give the removed todo removed property true.
+		This will not remove an item from the todo's array
+		but will determine where this todo will be displayed:
+		in the todo list or the removed list.
 		----------------------*/
-		destroy: function (e) {
-			// getIndexFromEl figures out what item in the todos array has been clicked
-			this.todos.splice(this.getIndexFromEl(e.target), 1);
-			// display
+		remove: function (e) {
+			var i = this.getIndexFromEl(e.target);
+			
+			this.todos[i].removed = !this.todos[i].removed;
 			this.render();
-		}  // End destroy ->  Call Stack: Does not return anything, calls render.
+		}  
 
 	};  // ---- End App
 
@@ -535,65 +514,53 @@ jQuery(function ($) {
 
 });
 
-/*----------------------
-		 Map
--------------------------
+// Stopping point notes:
+// - Updated 
+//   - destroy  to remove
+//   - destroyCompleted to removeCompleted.
+//  made updates so that they are called correctly as well.
+//  updated the destroyed class in index.html to removed and made
+//  updates so that everyting still works.
 
-jQuery {
 
-	Handlebars {}
+// Added properties to a todo in create method.
+// - removed: false,
+// - destroyed: false
 
-	CONST;
-	CONST;
+// Added getNotRemovedActiveTodos method
 
-	util {
+// updated render and render footer to reflect changes.
 
-		- uuid
-		- pluralize
-		- store
+// todos do not get destroyed/deleted, they are all still in the array
+// but only the ones with the removed property set to false will be displayed
+// in the todos list.
 
-	} -- End util --
+// Next:
+// - Create template to display removed todos.
+// - Create footer template for removed todos.
+// - add methods to give these templates requred data - todos with
+// the removed property set to true.
 
-	App {
+// removed template ideas:
+// - light green or blue background for completed todos
+// - light red for not completed
+// - no toggle button
+// - no edit options
+// - small time stamp below item.
+// - remove/delete permanently
 
-		- init
-		- bindEvents
-		- render
-		- renderFooter
-		- toggleAll
-		- getActiveTodos
-		- getCompletedTodos
-		- getFilteredTodos
-		- destroyCompleted
-		- getIndexFromEl
-		- create
-		- toggle
-		- editingMode
-		- editKeyup
-		- update
-		- destroy
-
-	}  -- End App --
-
-	App.init();
-
-} -- End jQuery --
+// header template ideas:
+// filter by date - old - new, new - old
 
 
 
+// Footer template ideas:
+//  - total items (show number based on filter - if completed - how many)
+//  - All
+//  - Completed
+//  - not completed
+//  - clear all
+         
 
-Method template:
-
-/*----------------------
-    method name;
-        ------------------------
-Called from: 
-    Accepts:
-    Returns:
-        How:
-        Why:
-----------------------*/
-
-/*************************************************************
-*************************************************************/
-
+// only display when items exist
+// toggle open close options - don't want to always view items.
