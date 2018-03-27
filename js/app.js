@@ -52,6 +52,7 @@ jQuery(function ($) {
 			this.todos = util.store('todos-jquery');
 			this.todoTemplate = Handlebars.compile($('#todo-template').html());
 			this.footerTemplate = Handlebars.compile($('#footer-template').html());
+			this.removedTemplate = Handlebars.compile($('#removed-template').html());
 			this.bindEvents();
 
 			new Router({
@@ -92,6 +93,13 @@ jQuery(function ($) {
 				.on('keyup', '.edit', this.editKeyup.bind(this))
 				.on('focusout', '.edit', this.update.bind(this))
 				.on('click', '.remove', this.remove.bind(this));
+
+			$('#removed-list')
+				.on('change', '.toggle', this.toggle.bind(this))
+				.on('dblclick', 'label', this.editingMode.bind(this))
+				.on('keyup', '.edit', this.editKeyup.bind(this))
+				.on('focusout', '.edit', this.update.bind(this))
+				.on('click', '.destroy', this.destroy.bind(this));
 		}, // End bindEvents ->  Call Stack:
 
     /*************************************************************
@@ -114,13 +122,22 @@ jQuery(function ($) {
 					return todo;
 				}
 			});
+			var removed = todos.filter(function (todo) {
+				if (todo.removed === true) {
+					return todo;
+				}
+			});
 			$('#todo-list').html(this.todoTemplate(notRemoved));
 			$('#main').toggle(todos.length > 0);
 			$('#toggle-all').prop('checked', this.getActiveTodos().length === 0);
 			
 			this.renderFooter();
+			$('#removed-list').html(this.removedTemplate(removed));
+
+
 			$('#new-todo').focus();
 			util.store('todos-jquery', this.todos);
+			console.log(this.todos);
 		},  // End render ->  Call Stack:
   
     /*************************************************************
@@ -505,6 +522,13 @@ jQuery(function ($) {
 			
 			this.todos[i].removed = !this.todos[i].removed;
 			this.render();
+		},
+		destroy: function (e) {
+			var i = this.getIndexFromEl(e.target);
+
+			this.todos.splice(i, 1);
+			this.render();
+			console.log('destroy');
 		}  
 
 	};  // ---- End App

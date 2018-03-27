@@ -20,6 +20,14 @@
 			</section>
 			<footer id="footer"></footer>
 		</section>
+		<section id="">
+			<h2>removed todos</h2>
+			<section id="removed">
+				<input id="toggle-all" type="checkbox">
+				<label for="toggle-all">Mark all as complete</label>
+				<ul id="removed-list"></ul>
+			</section>
+		</section>
 		<footer id="info">
 			<p>Double-click to edit a todo</p>
 			<p>Created by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
@@ -51,6 +59,18 @@
 				</li>
 			</ul>
 			{{#if completedTodos}}<button id="clear-completed">Clear completed</button>{{/if}}
+		</script>
+		<script id="removed-template" type="text/x-handlebars-template">
+			{{#this}}
+				<li {{#if completed}}class="completed"{{/if}} data-id="{{id}}">
+					<div class="view">
+						<input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
+						<label>{{title}}</label>
+						<button class="destroy"></button>
+					</div>
+					<input class="edit" value="{{title}}">
+				</li>
+			{{/this}}
 		</script>
 		<script src="node_modules/todomvc-common/base.js"></script>
 		<script src="node_modules/jquery/dist/jquery.js"></script>
