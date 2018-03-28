@@ -195,7 +195,10 @@ jQuery(function ($) {
 		 
 			var isChecked = $(e.target).prop('checked');
 			this.todos.forEach(function (todo) {
-				todo.completed = isChecked;
+				if (!todo.removed) {
+					todo.completed = isChecked;
+				}
+				
 			});
 			this.render();
 		},  // End toggleAll ->  Call Stack:
@@ -572,3 +575,5 @@ jQuery(function ($) {
 // render
 
 // what methods can be removed now?
+
+// Note: toggle all still toggles removed todos....
