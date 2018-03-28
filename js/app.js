@@ -117,19 +117,19 @@ jQuery(function ($) {
 		render: function () {
 			var todos = this.getFilteredTodos();
 			// To filter todos that have not been removed
-			var notRemoved = todos.filter(function (todo) {
+			var notRemoved = this.todos.filter(function (todo) {
 				if (todo.removed === false) {
 					return todo;
 				}
 			});
-			var removed = todos.filter(function (todo) {
+			var removed = this.todos.filter(function (todo) {
 				if (todo.removed === true) {
 					return todo;
 				}
 			});
 			$('#todo-list').html(this.todoTemplate(notRemoved));
-			$('#main').toggle(todos.length > 0);
-			$('#toggle-all').prop('checked', this.getActiveTodos().length === 0);
+			$('#main').toggle(notRemoved.length > 0);
+			$('#toggle-all').prop('checked', this.getNotRemovedActiveTodos().length === 0);
 			
 			this.renderFooter();
 			$('#removed-list').html(this.removedTemplate(removed));
@@ -154,11 +154,12 @@ jQuery(function ($) {
 		----------------------*/
 		renderFooter: function () {
 			var todoCount = this.todos.length;
+			var todosNotRemovedCount = this.getNotRemovedTodosCount().length;
 			var activeTodoCount = this.getNotRemovedActiveTodos().length;
 			var template = this.footerTemplate({
 				activeTodoCount: activeTodoCount,
 				activeTodoWord: util.pluralize(activeTodoCount, 'item'),
-				completedTodos: todoCount - activeTodoCount,
+				completedTodos: todosNotRemovedCount - activeTodoCount,
 				filter: this.filter
 			});
 
@@ -235,9 +236,29 @@ jQuery(function ($) {
 
     	getNotRemovedActiveTodos: function () {
     		return this.todos.filter(function (todo) {
-				return !todo.removed;
+    			if (!todo.removed && !todo.completed) {
+    				return todo;
+    			}
 			});
     	},
+    	getNotRemovedCompletedCount: function () {
+    		return this.todos.filter(function (todo) {
+    			if (!todo.removed && todo.completed) {
+    				return todo;
+    			}
+    		});
+    	},
+    	getNotRemovedTodosCount: function () {
+    		return this.todos.filter(function (todo) {
+    			return !todo.removed;
+    		});
+    	},
+    	getRemovedTodos: function () {
+    		return this.todos.filter(function (todo) {
+    			return todo.removed;
+    		});
+    	},
+
 		/*----------------------
 		   getCompletedTodos
         ------------------------
@@ -279,14 +300,17 @@ jQuery(function ($) {
 		----------------------*/
 	    getFilteredTodos: function () {
 			if (this.filter === 'active') {
-				return this.getActiveTodos();
+				return this.getNotRemovedActiveTodos();
 			}
 
 			if (this.filter === 'completed') {
-				return this.getCompletedTodos();
+				return this.getNotRemovedCompletedCount();
 			}
 
-			return this.todos;
+			if (this.filter === 'all') {
+				return this.getNotRemovedTodosCount();
+			}
+			
 		},  // End getFilteredTodos ->  Call Stack: getFilteredTodos > render
 
     /*************************************************************
@@ -539,52 +563,12 @@ jQuery(function ($) {
 });
 
 // Stopping point notes:
-// - Updated 
-//   - destroy  to remove
-//   - destroyCompleted to removeCompleted.
-//  made updates so that they are called correctly as well.
-//  updated the destroyed class in index.html to removed and made
-//  updates so that everyting still works.
+//Need to refactor new methods:
+// getNotRemovedActiveTodos
+// getNotRemovedCompletedCount
+// getNotRemovedTodosCount
+// getRemovedTodos
+// getFilteredTodos
+// render
 
-
-// Added properties to a todo in create method.
-// - removed: false,
-// - destroyed: false
-
-// Added getNotRemovedActiveTodos method
-
-// updated render and render footer to reflect changes.
-
-// todos do not get destroyed/deleted, they are all still in the array
-// but only the ones with the removed property set to false will be displayed
-// in the todos list.
-
-// Next:
-// - Create template to display removed todos.
-// - Create footer template for removed todos.
-// - add methods to give these templates requred data - todos with
-// the removed property set to true.
-
-// removed template ideas:
-// - light green or blue background for completed todos
-// - light red for not completed
-// - no toggle button
-// - no edit options
-// - small time stamp below item.
-// - remove/delete permanently
-
-// header template ideas:
-// filter by date - old - new, new - old
-
-
-
-// Footer template ideas:
-//  - total items (show number based on filter - if completed - how many)
-//  - All
-//  - Completed
-//  - not completed
-//  - clear all
-         
-
-// only display when items exist
-// toggle open close options - don't want to always view items.
+// what methods can be removed now?
