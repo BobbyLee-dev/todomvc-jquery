@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="css/app.css">
 	</head>
 	<body>
+		<div class="test">
 		<section id="todoapp">
 			<header id="header">
 				<h1>todos</h1>
@@ -20,14 +21,8 @@
 			</section>
 			<footer id="footer"></footer>
 		</section>
-		<section id="removed-section">
-			<h2>removed todos</h2>
-			<section id="removed">
-				<input id="toggle-all" type="checkbox">
-				<label for="toggle-all">Mark all as complete</label>
-				<ul id="removed-list"></ul>
-			</section>
-		</section>
+		<section id="removed-section"></section>
+		</div>
 		<footer id="info">
 			<p>Double-click to edit a todo</p>
 			<p>Created by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
@@ -61,16 +56,37 @@
 			{{#if completedTodos}}<button id="clear-completed">Clear completed</button>{{/if}}
 		</script>
 		<script id="removed-template" type="text/x-handlebars-template">
-			{{#this}}
-				<li {{#if completed}}class="completed"{{/if}} data-id="{{id}}">
-					<div class="view">
-						<input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
-						<label>{{title}}</label>
-						<button class="destroy"></button>
-					</div>
-					<input class="edit" value="{{title}}">
-				</li>
-			{{/this}}
+			<h2>removed todos</h2>
+			<section id="removed">
+				<input id="toggle-all" type="checkbox">
+				<ul id="removed-filters">
+					<li>
+						<span id="todo-count"><strong>{{removedCount}}</strong> {{removedTodoWord}} removed</span>
+					</li>
+					<li>
+						<a href="#/all-removed">All</a>
+					</li>
+					<li>
+						<a href="#/completed-removed">Completed</a>
+					</li>
+					<li>
+						<a href="#/not-completed-removed">Not Completed</a>
+					</li>
+				</ul>
+				<label for="toggle-all">Mark all as complete</label>
+				<ul id="removed-list">
+					{{#removedli}}
+						<li {{#if completed}}class="completed"{{/if}} data-id="{{id}}">
+							<div class="view">
+								<input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
+								<label>{{title}}</label>
+								<button class="destroy"></button>
+							</div>
+							<input class="edit" value="{{title}}">
+						</li>
+					{{/removedli}}
+				</ul>
+			</section>
 		</script>
 		<script src="node_modules/todomvc-common/base.js"></script>
 		<script src="node_modules/jquery/dist/jquery.js"></script>

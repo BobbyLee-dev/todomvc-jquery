@@ -94,7 +94,7 @@ jQuery(function ($) {
 				.on('focusout', '.edit', this.update.bind(this))
 				.on('click', '.remove', this.remove.bind(this));
 
-			$('#removed-list')
+			$('#removed-section')
 				.on('change', '.toggle', this.toggle.bind(this))
 				.on('dblclick', 'label', this.editingMode.bind(this))
 				.on('keyup', '.edit', this.editKeyup.bind(this))
@@ -127,17 +127,25 @@ jQuery(function ($) {
 					return todo;
 				}
 			});
-			$('#todo-list').html(this.todoTemplate(notRemoved));
+			$('#todo-list').html(this.todoTemplate(todos));
 			$('#main').toggle(notRemoved.length > 0);
 			$('#toggle-all').prop('checked', this.getNotRemovedActiveTodos().length === 0);
 			
 			this.renderFooter();
-			$('#removed-list').html(this.removedTemplate(removed));
 
+
+			// To toggle the removed todos list when there is 1 or more.
+			// $('#removed-section').toggle(removed.length > 0).html(this.removedTemplate(removed));
+			$('#removed-section').toggle(removed.length > 0).html(this.removedTemplate({
+				removedCount: removed.length,
+				removedTodoWord: util.pluralize(removed.length, 'item'),
+				removedli: todos
+			}));
+			
 
 			$('#new-todo').focus();
 			util.store('todos-jquery', this.todos);
-			console.log(this.todos);
+			console.log(this.todos.length);
 		},  // End render ->  Call Stack:
   
     /*************************************************************
@@ -163,7 +171,7 @@ jQuery(function ($) {
 				filter: this.filter
 			});
 
-			$('#footer').toggle(todoCount > 0).html(template);
+			$('#footer').toggle(todosNotRemovedCount > 0).html(template);
 		},  // renderFooter ->  Call Stack:
 
     /*************************************************************
@@ -311,6 +319,26 @@ jQuery(function ($) {
 			}
 
 			if (this.filter === 'all') {
+				return this.getNotRemovedTodosCount();
+			}
+
+			if (this.filter === 'all-removed') {
+				return this.getRemovedTodos();
+			}
+
+			if (this.filter === 'completed-removed') {
+				var removedTodos = this.getRemovedTodos();
+				return removedTodos.filter(function (todo) {
+					return todo.completed;
+				});
+				return this.getNotRemovedTodosCount();
+			}
+
+			if (this.filter === 'not-completed-removed') {
+				var removedTodos = this.getRemovedTodos();
+				return removedTodos.filter(function (todo) {
+					return !todo.completed;
+				});
 				return this.getNotRemovedTodosCount();
 			}
 			
@@ -555,7 +583,6 @@ jQuery(function ($) {
 
 			this.todos.splice(i, 1);
 			this.render();
-			console.log('destroy');
 		}  
 
 	};  // ---- End App
@@ -565,15 +592,11 @@ jQuery(function ($) {
 
 });
 
-// Stopping point notes:
-//Need to refactor new methods:
-// getNotRemovedActiveTodos
-// getNotRemovedCompletedCount
-// getNotRemovedTodosCount
-// getRemovedTodos
-// getFilteredTodos
-// render
+// removed todos works
+// need to change the focus everytime someting happens the focus goes to #new-todo
+// add toogle functionaliy on removed list
+// a clear all on removed list
+// a restore todo - from removed list - restore to todo list
+// timestamp.
+// style
 
-// what methods can be removed now?
-
-// Note: toggle all still toggles removed todos....
