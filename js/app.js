@@ -76,9 +76,7 @@ jQuery(function ($) {
 		        Why:
 		----------------------*/
 		bindEvents: function () {
-			function whatIsThis () {
-				console.log(this.bind(this));
-			} 
+			
 			$('#new-todo').on('keyup', this.create.bind(this));
 			// .on('change') doesn't necessarily trigger this event listener.
 			// for ex. if a user toggles all todo's individually without clicking toggleAll
@@ -86,6 +84,7 @@ jQuery(function ($) {
 			// https://developer.mozilla.org/en-US/docs/Web/Events/change
 			// *** if the change happens from javascript - 
 			$('#toggle-all').on('change', this.toggleAll.bind(this));
+			$('#toggle-all-removed').on('change', this.toggleRemoved.bind(this));
 			$('#footer').on('click', '#clear-completed', this.removeCompleted.bind(this));
 			$('#todo-list')
 				.on('change', '.toggle', this.toggle.bind(this))
@@ -94,7 +93,13 @@ jQuery(function ($) {
 				.on('focusout', '.edit', this.update.bind(this))
 				.on('click', '.remove', this.remove.bind(this));
 
+
+				
+
 			$('#removed-section')
+				.on('change', '#all-removed', this.render.bind(this))
+				.on('change', '#completed-removed', this.render.bind(this))
+				.on('change', '#not-completed-removed', this.render.bind(this))
 				.on('change', '.toggle', this.toggle.bind(this))
 				.on('dblclick', 'label', this.editingMode.bind(this))
 				.on('keyup', '.edit', this.editKeyup.bind(this))
@@ -116,6 +121,7 @@ jQuery(function ($) {
 		----------------------*/
 		render: function () {
 			var todos = this.getFilteredTodos();
+			var removedTodos = this.getRemovedFilteredTodos();
 			// To filter todos that have not been removed
 			var notRemoved = this.todos.filter(function (todo) {
 				if (todo.removed === false) {
@@ -139,13 +145,14 @@ jQuery(function ($) {
 			$('#removed-section').toggle(removed.length > 0).html(this.removedTemplate({
 				removedCount: removed.length,
 				removedTodoWord: util.pluralize(removed.length, 'item'),
-				removedli: todos
+				removedli: removed
 			}));
 			
 
-			$('#new-todo').focus();
+			// $('#new-todo').focus();
 			util.store('todos-jquery', this.todos);
-			console.log(this.todos.length);
+			console.log(todos);
+			console.log(removedTodos);
 		},  // End render ->  Call Stack:
   
     /*************************************************************
@@ -168,7 +175,7 @@ jQuery(function ($) {
 				activeTodoCount: activeTodoCount,
 				activeTodoWord: util.pluralize(activeTodoCount, 'item'),
 				completedTodos: todosNotRemovedCount - activeTodoCount,
-				filter: this.filter
+				// filter: this.filter
 			});
 
 			$('#footer').toggle(todosNotRemovedCount > 0).html(template);
@@ -213,7 +220,16 @@ jQuery(function ($) {
 
 	/*************************************************************
     *************************************************************/
-
+    	toggleRemoved: function () {
+    		var isChecked = $('#toggle-all-removed').prop('checked');
+    		if(isChecked) {
+    			$('#removed').css('display', 'none');
+    		} else {
+    			$('#removed').css('display', 'block');
+    		}
+    		
+    		
+    	},
 		/*----------------------
 		   getActiveTodos
         ------------------------
@@ -267,9 +283,15 @@ jQuery(function ($) {
     	getRemovedTodos: function () {
     		return this.todos.filter(function (todo) {
     			return todo.removed;
+    			console.log('removedtodos');
     		});
     	},
-
+    	getRemovedCompletedTodos: function () {
+    		var removedTodos = this.getRemovedTodos();
+			return removedTodos.filter(function (todo) {
+				return todo.completed;
+			});
+    	},
 		/*----------------------
 		   getCompletedTodos
         ------------------------
@@ -321,32 +343,33 @@ jQuery(function ($) {
 			if (this.filter === 'all') {
 				return this.getNotRemovedTodosCount();
 			}
-
-			if (this.filter === 'all-removed') {
-				return this.getRemovedTodos();
-			}
-
-			if (this.filter === 'completed-removed') {
-				var removedTodos = this.getRemovedTodos();
-				return removedTodos.filter(function (todo) {
-					return todo.completed;
-				});
-				return this.getNotRemovedTodosCount();
-			}
-
-			if (this.filter === 'not-completed-removed') {
-				var removedTodos = this.getRemovedTodos();
-				return removedTodos.filter(function (todo) {
-					return !todo.completed;
-				});
-				return this.getNotRemovedTodosCount();
-			}
 			
 		},  // End getFilteredTodos ->  Call Stack: getFilteredTodos > render
 
     /*************************************************************
     *************************************************************/
-		
+		getRemovedFilteredTodos: function () {
+			
+			if ($('#all-removed').prop('checked')) {
+				return this.getRemovedTodos();
+			}
+
+			if ($('#completed-removed').prop('checked')) {
+				var removedTodos = this.getRemovedTodos();
+				return removedTodos.filter(function (todo) {
+					return todo.completed;
+				});
+				
+			}
+
+			if ($('#not-completed-removed').prop('checked')) {
+				var removedTodos = this.getRemovedTodos();
+				return removedTodos.filter(function (todo) {
+					return !todo.completed;
+				});
+				
+			}
+		},
 	    /*----------------------
          destroyCompleted
         ------------------------

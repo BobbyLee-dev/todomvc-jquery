@@ -3,25 +3,28 @@
 	<head>
 		<meta charset="utf-8">
 		<title>jQuery • TodoMVC</title>
-		<link rel="stylesheet" href="node_modules/todomvc-common/base.css">
+		<!-- <link rel="stylesheet" href="node_modules/todomvc-common/base.css"> -->
 		<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
 		<link rel="stylesheet" href="css/app.css">
 	</head>
 	<body>
 		<div class="test">
-		<section id="todoapp">
-			<header id="header">
-				<h1>todos</h1>
-				<input id="new-todo" placeholder="What needs to be done?" autofocus>
-			</header>
-			<section id="main">
-				<input id="toggle-all" type="checkbox">
-				<label for="toggle-all">Mark all as complete</label>
-				<ul id="todo-list"></ul>
+			<section id="todoapp">
+				<header id="header">
+					<h1>todos</h1>
+					<input id="new-todo" placeholder="What needs to be done?" autofocus>
+				</header>
+				<section id="main">
+					<input id="toggle-all" type="checkbox">
+					<label for="toggle-all">Mark all as complete</label>
+					<ul id="todo-list"></ul>
+				</section>
+				<footer id="footer"></footer>
 			</section>
-			<footer id="footer"></footer>
-		</section>
-		<section id="removed-section"></section>
+			<div id="removed-wrapper">
+				<input id="toggle-all-removed" type="checkbox">
+				<section id="removed-section"></section>
+			</div>
 		</div>
 		<footer id="info">
 			<p>Double-click to edit a todo</p>
@@ -57,20 +60,21 @@
 		</script>
 		<script id="removed-template" type="text/x-handlebars-template">
 			<h2>removed todos</h2>
+
 			<section id="removed">
-				<input id="toggle-all" type="checkbox">
+				
 				<ul id="removed-filters">
 					<li>
 						<span id="todo-count"><strong>{{removedCount}}</strong> {{removedTodoWord}} removed</span>
 					</li>
 					<li>
-						<a href="#/all-removed">All</a>
+						<a href="#">All</a>
 					</li>
 					<li>
-						<a href="#/completed-removed">Completed</a>
+						<a href="#">Completed</a>
 					</li>
 					<li>
-						<a href="#/not-completed-removed">Not Completed</a>
+						<a href="#">Not Completed</a>
 					</li>
 				</ul>
 				<label for="toggle-all">Mark all as complete</label>
@@ -88,7 +92,7 @@
 				</ul>
 			</section>
 		</script>
-		<script src="node_modules/todomvc-common/base.js"></script>
+		<!-- <script src="node_modules/todomvc-common/base.js"></script> -->
 		<script src="node_modules/jquery/dist/jquery.js"></script>
 		<script src="node_modules/handlebars/dist/handlebars.js"></script>
 		<script src="node_modules/director/build/director.js"></script>
