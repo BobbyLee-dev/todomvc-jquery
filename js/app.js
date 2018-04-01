@@ -94,19 +94,22 @@ jQuery(function ($) {
 				.on('click', '.remove', this.remove.bind(this));
 
 
-				
+			$('footer')
+				.on('click', '#all', this.removedCurrentTodos.bind(this))
+				.on('click', '#active', this.removedCurrentTodos.bind(this))
+				.on('click', '#completed', this.removedCurrentTodos.bind(this));
 
 			$('#removed-section')
-				.on('change', '#all-removed', this.render.bind(this))
-				.on('change', '#completed-removed', this.render.bind(this))
-				.on('change', '#not-completed-removed', this.render.bind(this))
+				.on('click', '#all-removed', this.currentTodos.bind(this))
+				.on('click', '#completed-removed', this.currentTodos.bind(this))
+				.on('click', '#not-completed-removed', this.currentTodos.bind(this))
 				.on('change', '.toggle', this.toggle.bind(this))
 				.on('dblclick', 'label', this.editingMode.bind(this))
 				.on('keyup', '.edit', this.editKeyup.bind(this))
 				.on('focusout', '.edit', this.update.bind(this))
 				.on('click', '.destroy', this.destroy.bind(this));
 		}, // End bindEvents ->  Call Stack:
-
+		
     /*************************************************************
     *************************************************************/
 
@@ -119,8 +122,11 @@ jQuery(function ($) {
 		        How:
 		        Why:
 		----------------------*/
-		render: function () {
+		render: function (todo) {
+			
 			var todos = this.getFilteredTodos();
+			var removedList = this.getRemovedTodos();
+			// var removedList;
 			var removedTodos = this.getRemovedFilteredTodos();
 			// To filter todos that have not been removed
 			var notRemoved = this.todos.filter(function (todo) {
@@ -133,26 +139,58 @@ jQuery(function ($) {
 					return todo;
 				}
 			});
+
+
+			// todo list
+			if (this.filter === 'all') {
+				todos = this.getNotRemovedTodosCount();
+				removedList = todo;
+			} 
+
+			if (this.filter === 'active') {
+				todos = this.getNotRemovedActiveTodos();
+				removedList = todo;
+			}
+
+			if (this.filter === 'completed') {
+				todos = this.getNotRemovedCompletedCount();
+				removedList = todo;
+			}
+
+
+			// removed list
+			if (this.filter === 'all-removed') {
+				removedList = this.getRemovedTodos();
+				todos = todo;
+			} 
+
+			if (this.filter === 'completed-removed') {
+				removedList = this.getRemovedCompletedTodos();
+				todos = todo;
+			}
+
+			if (this.filter === 'not-completed-removed') {
+				removedList = this.getRemovedNotCompleted();
+				todos = todo;
+			}
+			
 			$('#todo-list').html(this.todoTemplate(todos));
 			$('#main').toggle(notRemoved.length > 0);
 			$('#toggle-all').prop('checked', this.getNotRemovedActiveTodos().length === 0);
 			
 			this.renderFooter();
+			
 
-
-			// To toggle the removed todos list when there is 1 or more.
-			// $('#removed-section').toggle(removed.length > 0).html(this.removedTemplate(removed));
 			$('#removed-section').toggle(removed.length > 0).html(this.removedTemplate({
 				removedCount: removed.length,
 				removedTodoWord: util.pluralize(removed.length, 'item'),
-				removedli: removed
+				removedli: removedList
 			}));
 			
 
 			// $('#new-todo').focus();
 			util.store('todos-jquery', this.todos);
-			console.log(todos);
-			console.log(removedTodos);
+			
 		},  // End render ->  Call Stack:
   
     /*************************************************************
@@ -183,7 +221,80 @@ jQuery(function ($) {
 
     /*************************************************************
     *************************************************************/
+    	currentTodos: function () {
+			var currentlyDisplaytedIds = [];
+			var currentUl = $('#todo-list li').get();
+			var getCurrentIds = currentUl.forEach(function (item) {
+				currentlyDisplaytedIds.push(item.dataset.id);
+			});
 
+			var todos = this.todos;
+			var i = todos.length;
+			var arr = [];
+			var test = currentlyDisplaytedIds.forEach(function (item) {
+				for (var i = 0; i < todos.length; i++) {
+					if (todos[i].id === item) {
+						arr.push(todos[i]);
+					}
+				}
+			});
+
+			this.render(arr);
+    	},
+    	removedCurrentTodos: function () {
+    		var removedCurrentlyDisplaytedIds = [];
+			var removedCurrentUl = $('#removed-list li').get();
+			var getCurrentRemovedIds = removedCurrentUl.forEach(function (item) {
+				removedCurrentlyDisplaytedIds.push(item.dataset.id);
+			});
+
+			// match ids to todos
+			var todos = this.todos;
+			var i = todos.length;
+			var removedArr = [];
+			var test = removedCurrentlyDisplaytedIds.forEach(function (item) {
+				for (var i = 0; i < todos.length; i++) {
+					if (todos[i].id === item) {
+						removedArr.push(todos[i]);
+					}
+				}
+			});
+			console.log(removedArr);
+			this.render(removedArr);
+    	},
+    	renderRemoved: function () {
+    		var removed = this.todos.filter(function (todo) {
+				if (todo.removed === true) {
+					return todo;
+				}
+			});
+
+    		// if all-removed, completed-removed, not-completed-removed
+    		// 	get correct data from methods
+
+    		// if all, active, completed - get current list and redisplay
+    		// 	with that data.
+    		
+    		// var arr = [];
+    		// $('#removed-list li').each(function () {
+    		// 	arr.push($(this).attr('data-id'));
+    		// });
+    		
+    		// var list = $('removed-list').bind(this);
+    		// var listItems = list.get(0);
+    		
+
+    		// var removedList = list.forEach(function (item) {
+    		// 	return item.id;
+    		// });
+
+			$('#removed-section').toggle(removed.length > 0).html(this.removedTemplate({
+				removedCount: removed.length,
+				removedTodoWord: util.pluralize(removed.length, 'item'),
+				removedli: removed
+			}));
+			
+    	},
 	    /*----------------------
 			toggleAll
         ------------------------
@@ -283,7 +394,7 @@ jQuery(function ($) {
     	getRemovedTodos: function () {
     		return this.todos.filter(function (todo) {
     			return todo.removed;
-    			console.log('removedtodos');
+    			// console.log('removedtodos');
     		});
     	},
     	getRemovedCompletedTodos: function () {
@@ -291,6 +402,12 @@ jQuery(function ($) {
 			return removedTodos.filter(function (todo) {
 				return todo.completed;
 			});
+    	},
+    	getRemovedNotCompleted: function () {
+    		var notCompleted = this.getRemovedTodos();
+    		return notCompleted.filter(function (todo) {
+    			return !todo.completed;
+    		});
     	},
 		/*----------------------
 		   getCompletedTodos
@@ -370,6 +487,9 @@ jQuery(function ($) {
 				
 			}
 		},
+		getCurrentRemovedList: function () {
+			// var currentRemovedTodos = $('#removed-filters')
+		},
 	    /*----------------------
          destroyCompleted
         ------------------------
@@ -385,7 +505,6 @@ jQuery(function ($) {
 			}, this);
 			this.filter = 'all';
 			this.render();
-			console.log(this.todos);
 		}, 
 
     /*************************************************************
