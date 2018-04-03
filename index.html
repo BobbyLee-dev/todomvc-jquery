@@ -47,13 +47,13 @@
 			<span id="todo-count"><strong>{{activeTodoCount}}</strong> {{activeTodoWord}} left</span>
 			<ul id="filters">
 				<li>
-					<a id="all" {{#eq filter 'all'}}class="selected"{{/eq}} href="#/all">All</a>
+					<a id="all" {{#eq filter 'all'}}class="selected"{{/eq}} href="#/all">All {{all}}</a>
 				</li>
 				<li>
-					<a id="active" {{#eq filter 'active'}}class="selected"{{/eq}}href="#/active">Active</a>
+					<a id="active" {{#eq filter 'active'}}class="selected"{{/eq}}href="#/active">Active {{activeTodoCount}}</a>
 				</li>
 				<li>
-					<a id="completed" {{#eq filter 'completed'}}class="selected"{{/eq}}href="#/completed">Completed</a>
+					<a id="completed" {{#eq filter 'completed'}}class="selected"{{/eq}}href="#/completed">Completed {{completed}}</a>
 				</li>
 			</ul>
 			{{#if completedTodos}}<button id="clear-completed">Clear completed</button>{{/if}}
@@ -68,13 +68,13 @@
 						<span id="todo-count"><strong>{{removedCount}}</strong> {{removedTodoWord}} removed</span>
 					</li>
 					<li>
-						<a id="all-removed" href="#/all-removed">All</a>
+						<a id="all-removed" href="#/all-removed">All {{removedCount}}</a>
 					</li>
 					<li>
-						<a id="completed-removed" href="#/completed-removed">Completed</a>
+						<a id="completed-removed" href="#/completed-removed">Completed {{removedCount}}</a>
 					</li>
 					<li>
-						<a id="not-completed-removed" href="#/not-completed-removed">Not Completed</a>
+						<a id="not-completed-removed" href="#/not-completed-removed">Not Completed {{allNotCompleted}}</a>
 					</li>
 				</ul>
 				<label for="toggle-all">Mark all as complete</label>

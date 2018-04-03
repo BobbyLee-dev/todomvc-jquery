@@ -50,6 +50,8 @@ jQuery(function ($) {
 		----------------------*/
 		init: function () {
 			this.todos = util.store('todos-jquery');
+			this.test = util.store('snapshot');
+			this.test = util.store('removed-snapshot');
 			this.todoTemplate = Handlebars.compile($('#todo-template').html());
 			this.footerTemplate = Handlebars.compile($('#footer-template').html());
 			this.removedTemplate = Handlebars.compile($('#removed-template').html());
@@ -95,14 +97,14 @@ jQuery(function ($) {
 
 
 			$('footer')
-				.on('click', '#all', this.removedCurrentTodos.bind(this))
-				.on('click', '#active', this.removedCurrentTodos.bind(this))
-				.on('click', '#completed', this.removedCurrentTodos.bind(this));
+				// .on('click', '#all', this.snapshot.bind(this))
+				// .on('click', '#active', this.removedCurrentTodos.bind(this))
+				// .on('click', '#completed', this.removedCurrentTodos.bind(this));
 
 			$('#removed-section')
-				.on('click', '#all-removed', this.currentTodos.bind(this))
-				.on('click', '#completed-removed', this.currentTodos.bind(this))
-				.on('click', '#not-completed-removed', this.currentTodos.bind(this))
+				// .on('click', '#all-removed', this.removedSnapshot.bind(this))
+				// .on('click', '#completed-removed', this.currentTodos.bind(this))
+				// .on('click', '#not-completed-removed', this.currentTodos.bind(this))
 				.on('change', '.toggle', this.toggle.bind(this))
 				.on('dblclick', 'label', this.editingMode.bind(this))
 				.on('keyup', '.edit', this.editKeyup.bind(this))
@@ -123,9 +125,8 @@ jQuery(function ($) {
 		        Why:
 		----------------------*/
 		render: function (todo) {
-			
-			var todos = this.getFilteredTodos();
-			var removedList = this.getRemovedTodos();
+			var todos;
+			var removedList;
 			// var removedList;
 			var removedTodos = this.getRemovedFilteredTodos();
 			// To filter todos that have not been removed
@@ -140,38 +141,12 @@ jQuery(function ($) {
 				}
 			});
 
-
-			// todo list
-			if (this.filter === 'all') {
-				todos = this.getNotRemovedTodosCount();
-				removedList = todo;
-			} 
-
-			if (this.filter === 'active') {
-				todos = this.getNotRemovedActiveTodos();
-				removedList = todo;
-			}
-
-			if (this.filter === 'completed') {
-				todos = this.getNotRemovedCompletedCount();
-				removedList = todo;
-			}
-
-
-			// removed list
-			if (this.filter === 'all-removed') {
-				removedList = this.getRemovedTodos();
-				todos = todo;
-			} 
-
-			if (this.filter === 'completed-removed') {
-				removedList = this.getRemovedCompletedTodos();
-				todos = todo;
-			}
-
-			if (this.filter === 'not-completed-removed') {
-				removedList = this.getRemovedNotCompleted();
-				todos = todo;
+			
+			if (this.filter === 'all' || this.filter === 'active' || this.filter === 'completed') {
+				todos = this.getFilteredTodos();
+			} else {
+				todos = this.test;
+			
 			}
 			
 			$('#todo-list').html(this.todoTemplate(todos));
@@ -180,9 +155,17 @@ jQuery(function ($) {
 			
 			this.renderFooter();
 			
-
+			if (this.filter === 'all-removed' || this.filter === 'completed-removed' || this.filter === 'not-completed-removed') {
+				removedList = this.getRemovedFilteredTodos();
+			} else {
+				removedList = this.removedTest;
+				
+			}
+			
 			$('#removed-section').toggle(removed.length > 0).html(this.removedTemplate({
 				removedCount: removed.length,
+				allCompleted: this.getRemovedCompletedTodos.length,
+				allNotCompleted: this.getRemovedNotCompleted.length,
 				removedTodoWord: util.pluralize(removed.length, 'item'),
 				removedli: removedList
 			}));
@@ -190,6 +173,19 @@ jQuery(function ($) {
 
 			// $('#new-todo').focus();
 			util.store('todos-jquery', this.todos);
+
+			// Snapshot
+
+			this.test = [];
+			this.removedTest = [];
+			
+			this.removedSnapshot();
+			this.snapshot();
+			util.store('snapshot', this.test);
+			util.store('removed-snapshot', this.removedTest);
+
+			console.log(this.todos);
+
 			
 		},  // End render ->  Call Stack:
   
@@ -209,8 +205,12 @@ jQuery(function ($) {
 			var todoCount = this.todos.length;
 			var todosNotRemovedCount = this.getNotRemovedTodosCount().length;
 			var activeTodoCount = this.getNotRemovedActiveTodos().length;
+			var allTodos = this.getNotRemovedTodosCount().length;
+			var completed = this.getNotRemovedCompletedCount().length;
 			var template = this.footerTemplate({
 				activeTodoCount: activeTodoCount,
+				all: allTodos,
+				completed: completed,
 				activeTodoWord: util.pluralize(activeTodoCount, 'item'),
 				completedTodos: todosNotRemovedCount - activeTodoCount,
 				// filter: this.filter
@@ -241,6 +241,46 @@ jQuery(function ($) {
 
 			this.render(arr);
     	},
+    	test: [],
+    	removedTest: [],
+    	snapshot: function () {
+    		var notRemovedIds = [];
+    		var notRemovedUl = $('#todo-list li').get();
+    		var getNotRemovedIds = notRemovedUl.forEach(function (todo) {
+    			notRemovedIds.push(todo.dataset.id);
+    		});
+
+    		var todos = this.todos;
+    		var i = todos.length;
+    		var notRemovedSnapshot = [];
+    		var getSnapshot = notRemovedIds.forEach(function (id) {
+    			for (var i = 0; i < todos.length; i++) {
+    				if (todos[i].id === id) {
+    					this.test.push(todos[i]);
+    				}
+    			}
+    		},this);
+    		
+    	},
+    	removedSnapshot: function () {
+    		var removedIds = [];
+    		var removedUl = $('#removed-list li').get();
+    		var getRemovedIds = removedUl.forEach(function (todo) {
+    			removedIds.push(todo.dataset.id);
+    		});
+
+    		var todos = this.todos;
+    		var i = todos.length;
+    		var removedSnapshot = [];
+    		var getSnapshot = removedIds.forEach(function (id) {
+    			for (var i = 0; i < todos.length; i++) {
+    				if (todos[i].id === id) {
+    					this.removedTest.push(todos[i]);
+    				}
+    			}
+    		},this);
+    		
+    	},
     	removedCurrentTodos: function () {
     		var removedCurrentlyDisplaytedIds = [];
 			var removedCurrentUl = $('#removed-list li').get();
@@ -259,7 +299,7 @@ jQuery(function ($) {
 					}
 				}
 			});
-			console.log(removedArr);
+			
 			this.render(removedArr);
     	},
     	renderRemoved: function () {
@@ -394,7 +434,7 @@ jQuery(function ($) {
     	getRemovedTodos: function () {
     		return this.todos.filter(function (todo) {
     			return todo.removed;
-    			// console.log('removedtodos');
+    			
     		});
     	},
     	getRemovedCompletedTodos: function () {
@@ -467,24 +507,16 @@ jQuery(function ($) {
     *************************************************************/
 		getRemovedFilteredTodos: function () {
 			
-			if ($('#all-removed').prop('checked')) {
+			if (this.filter === 'all-removed') {
 				return this.getRemovedTodos();
 			}
 
-			if ($('#completed-removed').prop('checked')) {
-				var removedTodos = this.getRemovedTodos();
-				return removedTodos.filter(function (todo) {
-					return todo.completed;
-				});
-				
+			if (this.filter === 'completed-removed') {
+				return this.getRemovedCompletedTodos();
 			}
 
-			if ($('#not-completed-removed').prop('checked')) {
-				var removedTodos = this.getRemovedTodos();
-				return removedTodos.filter(function (todo) {
-					return !todo.completed;
-				});
-				
+			if (this.filter === 'not-completed-removed') {
+				return this.getRemovedNotCompleted();
 			}
 		},
 		getCurrentRemovedList: function () {
@@ -539,7 +571,20 @@ jQuery(function ($) {
 
     /*************************************************************
     *************************************************************/
-		
+		removeTestTodo: function (id) {
+			var testTodos = this.test;
+			var i = testTodos.length;
+			var remove;
+
+			while (i--) {
+				if (testTodos[i].id == id) {
+					remove = i;
+				}
+			}
+			
+			this.test.splice(i, 1);
+			
+		},
 	    /*----------------------
 	         create
         ------------------------
@@ -576,7 +621,8 @@ jQuery(function ($) {
 				title: val,
 				completed: false,
 				removed: false,
-				destroyed: false
+				destroyed: false,
+				visible: true
 			});
 
 			$input.val('');
@@ -716,8 +762,10 @@ jQuery(function ($) {
 		----------------------*/
 		remove: function (e) {
 			var i = this.getIndexFromEl(e.target);
+			this.removeTestTodo(this.todos[i].id);
 			
-			this.todos[i].removed = !this.todos[i].removed;
+			// this.todos[i].removed = !this.todos[i].removed;
+			this.todos[i].removed = true;
 			this.render();
 		},
 		destroy: function (e) {
