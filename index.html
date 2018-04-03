@@ -3,23 +3,29 @@
 	<head>
 		<meta charset="utf-8">
 		<title>jQuery • TodoMVC</title>
-		<link rel="stylesheet" href="node_modules/todomvc-common/base.css">
+		<!-- <link rel="stylesheet" href="node_modules/todomvc-common/base.css"> -->
 		<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
 		<link rel="stylesheet" href="css/app.css">
 	</head>
 	<body>
-		<section id="todoapp">
-			<header id="header">
-				<h1>todos</h1>
-				<input id="new-todo" placeholder="What needs to be done?" autofocus>
-			</header>
-			<section id="main">
-				<input id="toggle-all" type="checkbox">
-				<label for="toggle-all">Mark all as complete</label>
-				<ul id="todo-list"></ul>
+		<div class="test">
+			<section id="todoapp">
+				<header id="header">
+					<h1>todos</h1>
+					<input id="new-todo" placeholder="What needs to be done?" autofocus>
+				</header>
+				<section id="main">
+					<input id="toggle-all" type="checkbox">
+					<label for="toggle-all">Mark all as complete</label>
+					<ul id="todo-list"></ul>
+				</section>
+				<footer id="footer"></footer>
 			</section>
-			<footer id="footer"></footer>
-		</section>
+			<div id="removed-wrapper">
+				<input id="toggle-all-removed" type="checkbox">
+				<section id="removed-section"></section>
+			</div>
+		</div>
 		<footer id="info">
 			<p>Double-click to edit a todo</p>
 			<p>Created by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
@@ -31,7 +37,7 @@
 				<div class="view">
 					<input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
 					<label>{{title}}</label>
-					<button class="destroy"></button>
+					<button class="remove"></button>
 				</div>
 				<input class="edit" value="{{title}}">
 			</li>
@@ -41,18 +47,52 @@
 			<span id="todo-count"><strong>{{activeTodoCount}}</strong> {{activeTodoWord}} left</span>
 			<ul id="filters">
 				<li>
-					<a {{#eq filter 'all'}}class="selected"{{/eq}} href="#/all">All</a>
+					<a id="all" {{#eq filter 'all'}}class="selected"{{/eq}} href="#/all">All {{all}}</a>
 				</li>
 				<li>
-					<a {{#eq filter 'active'}}class="selected"{{/eq}}href="#/active">Active</a>
+					<a id="active" {{#eq filter 'active'}}class="selected"{{/eq}}href="#/active">Active {{activeTodoCount}}</a>
 				</li>
 				<li>
-					<a {{#eq filter 'completed'}}class="selected"{{/eq}}href="#/completed">Completed</a>
+					<a id="completed" {{#eq filter 'completed'}}class="selected"{{/eq}}href="#/completed">Completed {{completed}}</a>
 				</li>
 			</ul>
 			{{#if completedTodos}}<button id="clear-completed">Clear completed</button>{{/if}}
 		</script>
-		<script src="node_modules/todomvc-common/base.js"></script>
+		<script id="removed-template" type="text/x-handlebars-template">
+			<h2>removed todos</h2>
+
+			<section id="removed">
+				
+				<ul id="removed-filters">
+					<li>
+						<span id="todo-count"><strong>{{removedCount}}</strong> {{removedTodoWord}} removed</span>
+					</li>
+					<li>
+						<a id="all-removed" href="#/all-removed">All {{removedCount}}</a>
+					</li>
+					<li>
+						<a id="completed-removed" href="#/completed-removed">Completed {{removedCount}}</a>
+					</li>
+					<li>
+						<a id="not-completed-removed" href="#/not-completed-removed">Not Completed {{allNotCompleted}}</a>
+					</li>
+				</ul>
+				<label for="toggle-all">Mark all as complete</label>
+				<ul id="removed-list">
+					{{#removedli}}
+						<li {{#if completed}}class="completed"{{/if}} data-id="{{id}}">
+							<div class="view">
+								<input class="toggle" type="checkbox" {{#if completed}}checked{{/if}}>
+								<label>{{title}}</label>
+								<button class="destroy"></button>
+							</div>
+							<input class="edit" value="{{title}}">
+						</li>
+					{{/removedli}}
+				</ul>
+			</section>
+		</script>
+		<!-- <script src="node_modules/todomvc-common/base.js"></script> -->
 		<script src="node_modules/jquery/dist/jquery.js"></script>
 		<script src="node_modules/handlebars/dist/handlebars.js"></script>
 		<script src="node_modules/director/build/director.js"></script>
