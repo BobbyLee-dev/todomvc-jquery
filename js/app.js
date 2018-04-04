@@ -224,14 +224,12 @@ jQuery(function ($) {
 		},
 		getRemovedFilteredTodos: function () {
 			
-			if (this.filter === 'all-removed') {
-				return this.getRemovedTodos();
-			} else if (this.filter === 'completed-removed') {
+			 if (this.filter === 'completed-removed') {
 				return this.getRemovedCompletedTodos();
 			} else if (this.filter === 'not-completed-removed') {
 				return this.getRemovedNotCompleted();
 			} else {
-				return 'test';
+				return this.getRemovedTodos();
 			}
 		},
 		
